@@ -1,0 +1,706 @@
+---
+import TreeView from "../components/TreeView.astro";
+import Header from "../components/Header.astro";
+import type { TreeNode } from "../components/TreeNodeItem.astro";
+
+type TocItem = { depth: number; slug: string; text: string };
+type NavItem = { href: string; title: string; description?: string };
+
+const {
+  title,
+  description = "",
+  toc = [],
+  tree = [],
+  activePath = "",
+  prev = null,
+  next = null,
+} = Astro.props as {
+  title: string;
+  description?: string;
+  toc?: TocItem[];
+  tree?: TreeNode[];
+  activePath: string;
+  prev?: NavItem | null;
+  next?: NavItem | null;
+};
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+
+    <style is:global>
+      :root {
+        --border: rgba(255, 255, 255, 0.12);
+        --muted: rgba(255, 255, 255, 0.62);
+        --bg: #0b0b0f;
+        --panel: rgba(255, 255, 255, 0.03);
+        --panel2: rgba(255, 255, 255, 0.02);
+        --line: rgba(255, 255, 255, 0.1);
+        --accent: #f97316;
+        --left-w: 320px;
+        --right-w: 300px;
+      }
+
+      /* Light theme */
+      [data-theme="light"] {
+        --border: rgba(0, 0, 0, 0.12);
+        --muted: rgba(0, 0, 0, 0.62);
+        --bg: #ffffff;
+        --panel: rgba(0, 0, 0, 0.03);
+        --panel2: rgba(0, 0, 0, 0.02);
+        --line: rgba(0, 0, 0, 0.1);
+        --accent: #f97316;
+      }
+
+      /* Light theme text colors - target body specifically */
+      [data-theme="light"] body {
+        color: #0f0f0f;
+      }
+
+      [data-theme="light"] .brand,
+      [data-theme="light"] .brand a {
+        color: #0f0f0f;
+      }
+
+      [data-theme="light"] .content {
+        color: #0f0f0f;
+      }
+
+      html,
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: #f3f3f3;
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* LAYOUT - 3 COLUMN GRID */
+      .shell {
+        display: grid;
+        grid-template-columns: var(--left-w) minmax(0, 1fr) var(--right-w);
+        gap: 0;
+        align-items: start;
+        min-height: calc(100vh - 64px);
+      }
+
+      /* SIDEBARS */
+      aside {
+        background: var(--panel2);
+        min-height: 100%;
+      }
+
+      .left {
+        border-right: 1px solid var(--border);
+      }
+
+      .right {
+        border-left: 1px solid var(--border);
+      }
+
+      .asideSticky {
+        position: sticky;
+        top: 64px;
+        height: calc(100vh - 64px);
+        overflow: auto;
+        padding: 14px 14px 18px;
+        box-sizing: border-box;
+      }
+
+      /* MAIN CONTENT */
+      main {
+        padding: 18px 22px 80px;
+        box-sizing: border-box;
+      }
+
+      .content :global(h1) {
+        margin-top: 0;
+      }
+
+      .content :global(h2) {
+        margin-top: 26px;
+      }
+
+      .content :global(code) {
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+
+      .content :global(pre) {
+        padding: 12px;
+        border-radius: 12px;
+        overflow: auto;
+      }
+
+      /* HORIZONTAL DIVIDERS */
+      .content hr {
+        margin: 40px 0;
+        border: none;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(255, 255, 255, 0.12) 20%,
+          rgba(255, 255, 255, 0.12) 80%,
+          transparent
+        );
+      }
+
+      [data-theme="light"] .content hr {
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(0, 0, 0, 0.12) 20%,
+          rgba(0, 0, 0, 0.12) 80%,
+          transparent
+        );
+      }
+
+      /* SIDEBAR TITLES */
+      .side-title {
+        color: #fff;
+        font-weight: 800;
+        margin: 0 0 6px;
+      }
+
+      [data-theme="light"] .side-title {
+        color: #0f0f0f;
+      }
+
+      .side-sub {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* LEFT TREE NAVIGATION */
+      .tree {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .tree ul {
+        list-style: none;
+        margin: 0;
+        padding-left: 18px;
+        position: relative;
+      }
+
+      .tree ul::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 8px;
+        width: 1px;
+        background: var(--line);
+      }
+
+      .tree li {
+        padding: 2px 0;
+      }
+
+      .node {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 0;
+        font-size: 13px;
+        line-height: 1.25;
+        color: var(--muted);
+        transition: color 0.14s ease;
+      }
+
+      .node:hover {
+        color: #fff;
+      }
+
+      [data-theme="light"] .node:hover {
+        color: #0f0f0f;
+      }
+
+      .node.active {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .navhead {
+        color: #fff;
+        font-weight: 800;
+        cursor: default;
+      }
+
+      [data-theme="light"] .navhead {
+        color: #0f0f0f;
+      }
+
+      .navhead:hover {
+        color: #fff;
+      }
+
+      [data-theme="light"] .navhead:hover {
+        color: #0f0f0f;
+      }
+
+      /* RIGHT TABLE OF CONTENTS */
+      .toc a {
+        display: block;
+        padding: 4px 0;
+        font-size: 13px;
+        line-height: 1.25;
+        color: var(--muted);
+        transition: color 0.14s ease;
+        position: relative;
+      }
+
+      .toc a:hover {
+        color: #fff;
+      }
+
+      [data-theme="light"] .toc a:hover {
+        color: #0f0f0f;
+      }
+
+      .toc a.active {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .toc a.d2 {
+        padding-left: 0px;
+      }
+
+      .toc a.d3 {
+        padding-left: 18px;
+      }
+
+      .toc a.d4 {
+        padding-left: 36px;
+      }
+
+      .toc a.d3::before,
+      .toc a.d4::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--line);
+      }
+
+      .toc a.d4::after {
+        content: "";
+        position: absolute;
+        left: 26px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--line);
+      }
+
+      /* PREV / NEXT PAGINATION */
+      .pager {
+        margin-top: 90px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .pagerCard {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 8px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        min-height: 160px;
+        padding: 22px 20px;
+        background: var(--panel);
+        color: var(--muted);
+        transition:
+          transform 0.15s ease,
+          background 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
+      }
+
+      .pagerCard.prev {
+        align-items: flex-start;
+        text-align: left;
+        --dir: -2px;
+      }
+
+      .pagerCard.next {
+        align-items: flex-end;
+        text-align: right;
+        --dir: 2px;
+      }
+
+      .pagerCard:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: #fff;
+      }
+
+      [data-theme="light"] .pagerCard:hover {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.18);
+        color: #0f0f0f;
+      }
+
+      .pagerMeta {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .pagerArrow {
+        position: absolute;
+        top: 16px;
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: var(--panel);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease,
+          transform 0.15s ease;
+      }
+
+      [data-theme="light"] .pagerArrow {
+        border-color: rgba(0, 0, 0, 0.18);
+      }
+
+      .pagerCard.prev .pagerArrow {
+        left: 16px;
+      }
+
+      .pagerCard.next .pagerArrow {
+        right: 16px;
+      }
+
+      .pagerArrow svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2.25;
+        fill: none;
+        color: var(--muted);
+        transition:
+          color 0.15s ease,
+          transform 0.15s ease;
+      }
+
+      .pagerCard:hover .pagerArrow {
+        border-color: var(--accent);
+        background: rgba(249, 115, 22, 0.12);
+      }
+
+      .pagerCard:hover .pagerArrow svg {
+        color: var(--accent);
+        transform: translateX(var(--dir));
+      }
+
+      .pagerLabel {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .pagerTitle {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.25;
+      }
+
+      [data-theme="light"] .pagerTitle {
+        color: #0f0f0f;
+      }
+
+      .pagerDesc {
+        margin-top: 2px;
+        font-size: 13px;
+        line-height: 1.35;
+        color: var(--muted);
+        max-width: 42ch;
+      }
+
+      .pagerCard.next .pagerDesc {
+        margin-left: auto;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1040px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .left,
+        .right {
+          border: 0;
+        }
+
+        .asideSticky {
+          position: static;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+
+    <div class="shell">
+      <!-- LEFT SIDEBAR -->
+      <aside class="left">
+        <div class="asideSticky">
+          <h3 class="side-title">Lessons</h3>
+          <p class="side-sub">Current level</p>
+          <TreeView tree={tree} activePath={activePath} />
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="content">
+        {description && <p class="lessonDesc">{description}</p>}
+
+        <slot />
+
+        {
+          (prev || next) && (
+            <nav class="pager" aria-label="Lesson navigation">
+              {prev ? (
+                <a class="pagerCard prev" href={prev.href}>
+                  <div class="pagerArrow">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M15 6l-6 6 6 6" />
+                    </svg>
+                  </div>
+
+                  <div class="pagerMeta">
+                    <div class="pagerLabel">Previous</div>
+                    <div class="pagerTitle">{prev.title}</div>
+                    {prev.description && (
+                      <div class="pagerDesc">{prev.description}</div>
+                    )}
+                  </div>
+                </a>
+              ) : (
+                <div />
+              )}
+
+              {next ? (
+                <a class="pagerCard next" href={next.href}>
+                  <div class="pagerArrow">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" />
+                    </svg>
+                  </div>
+
+                  <div class="pagerMeta">
+                    <div class="pagerLabel">Next</div>
+                    <div class="pagerTitle">{next.title}</div>
+                    {next.description && (
+                      <div class="pagerDesc">{next.description}</div>
+                    )}
+                  </div>
+                </a>
+              ) : (
+                <div />
+              )}
+            </nav>
+          )
+        }
+      </main>
+
+      <!-- RIGHT SIDEBAR -->
+      <aside class="right">
+        <div class="asideSticky">
+          <h3 class="side-title">Page contents</h3>
+          <p class="side-sub">On this page</p>
+
+          <div class="toc" id="toc">
+            {
+              toc.length === 0 ? (
+                <div class="muted">No headings found.</div>
+              ) : (
+                toc
+                  .filter((h) => h.depth >= 2 && h.depth < 5)
+                  .map((h) => (
+                    <a
+                      class={`d${h.depth}`}
+                      href={`#${h.slug}`}
+                      data-toc={`#${h.slug}`}
+                    >
+                      {h.text}
+                    </a>
+                  ))
+              )
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Auto-highlight active TOC section -->
+    <script>
+      (() => {
+        const toc = document.getElementById("toc");
+        if (!toc) return;
+
+        const links = Array.from(toc.querySelectorAll("a"));
+        if (links.length === 0) return;
+
+        const byId = new Map();
+        for (const a of links) {
+          const hash = a.getAttribute("href") || "";
+          const id = hash.startsWith("#") ? hash.slice(1) : "";
+          if (id) byId.set(id, a);
+        }
+
+        const headings = Array.from(
+          document.querySelectorAll("h2[id], h3[id], h4[id]"),
+        ).filter((h) => byId.has(h.id));
+
+        if (headings.length === 0) return;
+
+        let isScrollingFromClick = false;
+        let scrollTimeout: number;
+        let currentActiveId = "";
+
+        const setActive = (id: string) => {
+          if (currentActiveId === id) return;
+
+          currentActiveId = id;
+          links.forEach((a) => a.classList.remove("active"));
+          const el = byId.get(id);
+          if (el) {
+            el.classList.add("active");
+          }
+        };
+
+        const initial = location.hash ? location.hash.slice(1) : "";
+        if (initial && byId.has(initial)) {
+          setActive(initial);
+        } else if (headings[0]) {
+          setActive(headings[0].id);
+        }
+
+        let lastUpdate = 0;
+        const throttleDelay = 100;
+
+        const updateActiveHeading = () => {
+          if (isScrollingFromClick) return;
+
+          const now = Date.now();
+          if (now - lastUpdate < throttleDelay) return;
+          lastUpdate = now;
+
+          const scrollTop = window.scrollY;
+          const triggerPoint = scrollTop + 150;
+
+          const headingPositions = headings.map((heading) => ({
+            id: heading.id,
+            top: heading.getBoundingClientRect().top + scrollTop,
+            element: heading,
+          }));
+
+          let activeHeading = headingPositions[0];
+
+          for (const heading of headingPositions) {
+            if (heading.top <= triggerPoint) {
+              activeHeading = heading;
+            } else {
+              break;
+            }
+          }
+
+          if (activeHeading && activeHeading.id) {
+            setActive(activeHeading.id);
+          }
+        };
+
+        let rafId: number | null = null;
+        const scheduleUpdate = () => {
+          if (rafId === null) {
+            rafId = requestAnimationFrame(() => {
+              updateActiveHeading();
+              rafId = null;
+            });
+          }
+        };
+
+        window.addEventListener("scroll", scheduleUpdate, { passive: true });
+        updateActiveHeading();
+
+        toc.addEventListener("click", (e) => {
+          const t = e.target;
+          if (!(t instanceof Element)) return;
+          const a = t.closest("a");
+          if (!(a instanceof HTMLAnchorElement)) return;
+          const hash = a.getAttribute("href") || "";
+
+          if (hash.startsWith("#")) {
+            e.preventDefault();
+            const targetId = hash.slice(1);
+            const targetEl = document.getElementById(targetId);
+
+            if (targetEl) {
+              isScrollingFromClick = true;
+              clearTimeout(scrollTimeout);
+
+              setActive(targetId);
+              targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              history.pushState(null, "", hash);
+
+              scrollTimeout = window.setTimeout(() => {
+                isScrollingFromClick = false;
+                updateActiveHeading();
+              }, 1000);
+            }
+          }
+        });
+
+        window.addEventListener("hashchange", () => {
+          const hash = location.hash.slice(1);
+          if (hash && byId.has(hash)) {
+            setActive(hash);
+            const targetEl = document.getElementById(hash);
+            if (targetEl) {
+              isScrollingFromClick = true;
+              targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              scrollTimeout = window.setTimeout(() => {
+                isScrollingFromClick = false;
+                updateActiveHeading();
+              }, 1000);
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

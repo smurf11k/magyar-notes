@@ -1,0 +1,38 @@
+---
+import Self from "./TreeNodeItem.astro";
+
+export type TreeNode = {
+  name: string;
+  label: string;
+  path: string;
+  isFile: boolean;
+  children?: TreeNode[];
+};
+
+const { node, activePath } = Astro.props as {
+  node: TreeNode;
+  activePath: string;
+};
+
+const isActive = node.isFile && node.path === activePath;
+---
+
+<li>
+  {node.isFile ? (
+    <a class={"node " + (isActive ? "active" : "")} href={`/lessons/${node.path}`}>
+      {node.label}
+    </a>
+  ) : (
+    <div class="node navhead">
+      {node.label}
+    </div>
+  )}
+
+  {node.children && node.children.length > 0 ? (
+    <ul>
+      {node.children.map((child) => (
+        <Self node={child} activePath={activePath} />
+      ))}
+    </ul>
+  ) : null}
+</li>

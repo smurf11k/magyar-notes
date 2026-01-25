@@ -1,0 +1,239 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import { levelFromFolder } from "../lib/lesson-nav";
+
+const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
+
+// level folder = first path segment, e.g. "a1-lessons"
+const levelFolders = Array.from(
+  new Set(entries.map((e) => e.id.split("/")[0])),
+);
+
+// Level descriptions
+const levelDescriptions: Record<string, string> = {
+  A1: "Just starting out? Learn basic phrases and everyday vocabulary. You'll be able to introduce yourself and have simple conversations.",
+  A2: "Building confidence! Understand familiar topics and express yourself in routine situations. Perfect for travel basics.",
+  B1: "Getting comfortable! Handle most everyday situations confidently. You can share experiences and explain your opinions.",
+  B2: "Nearly fluent! Understand complex texts and speak spontaneously. Ready for professional and academic settings.",
+  C1: "Advanced mastery! Express yourself fluently across all topics. Near-native comprehension and nuanced expression.",
+  C2: "Complete fluency! Understand virtually everything and express yourself with precision and subtlety.",
+};
+
+// Level colors
+const levelColors: Record<
+  string,
+  { bg: string; border: string; text: string }
+> = {
+  A1: {
+    bg: "rgba(134, 239, 172, 0.1)",
+    border: "rgba(134, 239, 172, 0.3)",
+    text: "#86efac",
+  },
+  A2: {
+    bg: "rgba(74, 222, 128, 0.1)",
+    border: "rgba(74, 222, 128, 0.3)",
+    text: "#4ade80",
+  },
+  B1: {
+    bg: "rgba(253, 224, 71, 0.1)",
+    border: "rgba(253, 224, 71, 0.3)",
+    text: "#fde047",
+  },
+  B2: {
+    bg: "rgba(251, 146, 60, 0.1)",
+    border: "rgba(251, 146, 60, 0.3)",
+    text: "#fb923c",
+  },
+  C1: {
+    bg: "rgba(248, 113, 113, 0.1)",
+    border: "rgba(248, 113, 113, 0.3)",
+    text: "#f87171",
+  },
+  C2: {
+    bg: "rgba(239, 68, 68, 0.1)",
+    border: "rgba(239, 68, 68, 0.3)",
+    text: "#ef4444",
+  },
+};
+
+// convert to human level labels (A1/A2/B1/B2/C1/C2)
+const levels = levelFolders
+  .map((folder) => ({ folder, label: levelFromFolder(folder) }))
+  .filter(
+    (
+      x,
+    ): x is {
+      folder: string;
+      label: NonNullable<ReturnType<typeof levelFromFolder>>;
+    } => !!x.label,
+  );
+
+// order A1 A2 B1 B2 C1 C2
+const order = ["A1", "A2", "B1", "B2", "C1", "C2"];
+levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
+---
+
+<Layout title="Magyar Notes">
+  <Header />
+
+  <main class="home">
+    <section class="hero">
+      <img
+        class="logo"
+        src="/favicon.svg"
+        alt="Magyar Notes logo"
+        width="72"
+        height="72"
+      />
+      <h1 class="title">Magyar Notes</h1>
+      <p class="subtitle">
+        Hungarian lessons & notes — structured by level. Pick a level to start.
+      </p>
+
+      <div class="cards">
+        {
+          levels.map((lvl) => {
+            const colors = levelColors[lvl.label];
+            return (
+              <a class="card" href={`/level/${lvl.folder}`}>
+                <div class="cardTop">
+                  <div
+                    class="badge"
+                    style={`background: ${colors.bg}; border-color: ${colors.border}; color: ${colors.text};`}
+                  >
+                    {lvl.label}
+                  </div>
+                </div>
+                <div class="cardDesc">
+                  {levelDescriptions[lvl.label] ||
+                    `Lessons for ${lvl.label} level`}
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+    </section>
+  </main>
+
+  <style is:global>
+    .home {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      place-items: center;
+      padding: 60px 18px;
+      background: var(--bg);
+      color: #f3f3f3;
+    }
+
+    [data-theme="light"] .home {
+      color: #0f0f0f;
+    }
+
+    .hero {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .logo {
+      opacity: 0.95;
+    }
+
+    .title {
+      margin: 8px 0 0;
+      font-size: 44px;
+      letter-spacing: 0.2px;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      opacity: 0.75;
+      max-width: 52ch;
+      line-height: 1.5;
+    }
+
+    .cards {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .card {
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    [data-theme="light"] .card {
+      border-color: rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    [data-theme="light"] .card:hover {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.18);
+    }
+
+    .cardTop {
+      display: flex;
+      align-items: center;
+    }
+
+    .badge {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid;
+      font-size: 15px;
+    }
+
+    .cardDesc {
+      opacity: 0.85;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(243, 243, 243, 0.9);
+    }
+
+    [data-theme="light"] .cardDesc {
+      color: rgba(15, 15, 15, 0.9);
+    }
+
+    @media (max-width: 820px) {
+      .title {
+        font-size: 36px;
+      }
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Layout>

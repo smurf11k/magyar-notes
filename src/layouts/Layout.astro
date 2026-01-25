@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Magyar Notes</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --border: rgba(255, 255, 255, 0.12);
+    --muted: rgba(255, 255, 255, 0.62);
+    --bg: #0b0b0f;
+    --panel: rgba(255, 255, 255, 0.03);
+    --panel2: rgba(0, 0, 0, 0.02);
+    --line: rgba(0, 0, 0, 0.1);
+    --accent: #f97316;
+  }
+
+  /* Light theme */
+  [data-theme="light"] {
+    --border: rgba(0, 0, 0, 0.12);
+    --muted: rgba(0, 0, 0, 0.62);
+    --bg: #ffffff;
+    --panel: rgba(0, 0, 0, 0.03);
+    --panel2: rgba(0, 0, 0, 0.02);
+    --line: rgba(0, 0, 0, 0.1);
+    --accent: #f97316;
+  }
+
+  body {
+    margin: 0;
+    font-family:
+      system-ui,
+      -apple-system,
+      Segoe UI,
+      Roboto,
+      Arial;
+    background: var(--bg);
+    color: #f3f3f3;
+    align-items: center;
+  }
+  a {
+    color: inherit;
+  }
+  .muted {
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  // Initialize theme on page load
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+</script>

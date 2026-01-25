@@ -1,0 +1,172 @@
+---
+import LessonLayout from "../../layouts/LessonLayout.astro";
+import Callout from "../../components/Callout.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import { stripMd, titleFromPart, orderFromPart } from "../../lib/lesson-nav";
+
+type TreeNode = {
+  name: string;
+  label: string;
+  path: string;
+  isFile: boolean;
+  children?: TreeNode[];
+};
+
+type NavItem = {
+  id: string;
+  href: string;
+  title: string;
+  description?: string;
+};
+
+function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
+  const root: TreeNode = {
+    name: "",
+    label: "",
+    path: "",
+    isFile: false,
+    children: [],
+  };
+
+  // Create a map of paths to titles from frontmatter
+  const pathToTitle = new Map<string, string>();
+  for (const entry of entries) {
+    const clean = stripMd(entry.id);
+    if (entry.data.title) {
+      pathToTitle.set(clean, entry.data.title);
+    }
+  }
+
+  for (const entry of entries) {
+    const clean = stripMd(entry.id);
+    const parts = clean.split("/");
+
+    let cur = root;
+    let accum = "";
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      accum = accum ? `${accum}/${part}` : part;
+      const isLeaf = i === parts.length - 1;
+
+      cur.children ??= [];
+      let child = cur.children.find((c) => c.name === part);
+
+      if (!child) {
+        // For leaf nodes (files), use the frontmatter title if available
+        const label =
+          isLeaf && pathToTitle.has(accum)
+            ? pathToTitle.get(accum)!
+            : titleFromPart(part);
+
+        child = {
+          name: part,
+          label,
+          path: accum,
+          isFile: isLeaf,
+          children: [],
+        };
+        cur.children.push(child);
+      }
+
+      if (!isLeaf) child.isFile = false;
+      cur = child;
+    }
+  }
+
+  function sortNodes(nodes: TreeNode[]) {
+    nodes.sort((a, b) => {
+      if (a.isFile !== b.isFile) return a.isFile ? 1 : -1;
+      const ao = orderFromPart(a.name);
+      const bo = orderFromPart(b.name);
+      if (ao !== bo) return ao - bo;
+      return a.label.localeCompare(b.label);
+    });
+    for (const n of nodes) {
+      if (n.children?.length) sortNodes(n.children);
+    }
+  }
+
+  sortNodes(root.children!);
+  return root.children!;
+}
+
+function sortByPath(a: string, b: string) {
+  const ap = stripMd(a).split("/");
+  const bp = stripMd(b).split("/");
+  const max = Math.max(ap.length, bp.length);
+
+  for (let i = 0; i < max; i++) {
+    const ao = orderFromPart(ap[i] ?? "");
+    const bo = orderFromPart(bp[i] ?? "");
+    if (ao !== bo) return ao - bo;
+
+    const cmp = (ap[i] ?? "").localeCompare(bp[i] ?? "");
+    if (cmp !== 0) return cmp;
+  }
+  return 0;
+}
+
+export async function getStaticPaths() {
+  const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
+  return entries.map((e) => ({
+    params: { slug: stripMd(e.id) },
+  }));
+}
+
+const slug = Astro.params.slug!;
+// Support both .md and .mdx files
+const targetIdMd = Array.isArray(slug) ? slug.join("/") + ".md" : slug + ".md";
+const targetIdMdx = Array.isArray(slug)
+  ? slug.join("/") + ".mdx"
+  : slug + ".mdx";
+
+const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
+// Try to find either .md or .mdx file
+const entry = entries.find((e) => e.id === targetIdMd || e.id === targetIdMdx);
+if (!entry) return new Response("Page not found", { status: 404 });
+
+const { Content, headings } = await render(entry);
+
+// Build tree for current level
+const levelFolder = entry.id.split("/")[0];
+const levelEntries = entries.filter((e) => e.id.startsWith(levelFolder + "/"));
+const tree = buildTree(levelEntries);
+const activePath = stripMd(entry.id);
+
+// Build prev/next navigation
+const ordered: NavItem[] = [...levelEntries]
+  .sort((a, b) => sortByPath(a.id, b.id))
+  .map((e) => {
+    const clean = stripMd(e.id);
+    const parts = clean.split("/");
+    const last = parts[parts.length - 1];
+
+    return {
+      id: e.id,
+      href: "/lessons/" + clean,
+      title: e.data.title ?? titleFromPart(last),
+      description: e.data.description ?? "",
+    };
+  });
+
+const idx = ordered.findIndex((x) => x.id === entry.id);
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
+
+const pageTitle = entry.data.title ?? "Lesson";
+const description = entry.data.description ?? titleFromPart(levelFolder);
+---
+
+<LessonLayout
+  title={`${pageTitle} | Magyar Notes`}
+  description={description}
+  toc={headings}
+  tree={tree}
+  activePath={activePath}
+  prev={prev}
+  next={next}
+>
+  <Content components={{ Callout }} />
+</LessonLayout>

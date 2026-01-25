@@ -1,0 +1,126 @@
+---
+export interface Props {
+  type?: "warning" | "tip" | "note" | "danger" | "info";
+  title?: string;
+}
+
+const { type = "info", title } = Astro.props;
+
+const config = {
+  warning: {
+    color: "#f59e0b",
+    bg: "rgba(245, 158, 11, 0.08)",
+    icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
+    label: title || "Warning",
+  },
+  tip: {
+    color: "#10b981",
+    bg: "rgba(16, 185, 129, 0.08)",
+    icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
+    label: title || "Tip",
+  },
+  note: {
+    color: "#3b82f6",
+    bg: "rgba(59, 130, 246, 0.08)",
+    icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    label: title || "Note",
+  },
+  danger: {
+    color: "#ef4444",
+    bg: "rgba(239, 68, 68, 0.08)",
+    icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
+    label: title || "Danger",
+  },
+  info: {
+    color: "#8b5cf6",
+    bg: "rgba(139, 92, 246, 0.08)",
+    icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    label: title || "Info",
+  },
+};
+
+const current = config[type];
+---
+
+<div
+  class="callout"
+  style={`--callout-color: ${current.color}; --callout-bg: ${current.bg};`}
+>
+  <div class="callout-header">
+    <svg
+      class="callout-icon"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d={current.icon}></path>
+    </svg>
+    <span class="callout-title">{current.label}</span>
+  </div>
+  <div class="callout-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .callout {
+    margin: 20px 0;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1.5px solid var(--callout-color);
+    background: var(--callout-bg);
+    color: #f3f3f3;
+  }
+
+  .callout-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .callout-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--callout-color);
+    flex-shrink: 0;
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--callout-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .callout-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(243, 243, 243, 0.9);
+  }
+
+  .callout-content :global(p) {
+    margin: 0;
+  }
+
+  .callout-content :global(p + p) {
+    margin-top: 10px;
+  }
+
+  .callout-content :global(strong) {
+    color: #fff;
+  }
+
+  .callout-content :global(code) {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+</style>
