@@ -1,6 +1,7 @@
 ---
 import TreeView from "../components/TreeView.astro";
 import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 import type { TreeNode } from "../components/TreeNodeItem.astro";
 
 type TocItem = { depth: number; slug: string; text: string };
@@ -67,6 +68,11 @@ const {
 
       [data-theme="light"] .content {
         color: #0f0f0f;
+      }
+
+      html {
+        scroll-padding-top: 80px; /* Header height (64px) + buffer (16px) */
+        scroll-behavior: smooth;
       }
 
       html,
@@ -166,6 +172,88 @@ const {
           rgba(0, 0, 0, 0.12) 80%,
           transparent
         );
+      }
+
+      /* TABLES */
+      .content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 24px 0;
+        font-size: 14px;
+        line-height: 1.5;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      [data-theme="light"] .content table {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .content thead {
+        background: var(--panel);
+        border-bottom: 2px solid var(--border);
+      }
+
+      .content th {
+        padding: 14px 18px;
+        text-align: left;
+        font-weight: 700;
+        color: #fff;
+        border-right: 1.5px solid var(--border);
+      }
+
+      [data-theme="light"] .content th {
+        color: #0f0f0f;
+      }
+
+      .content th:last-child {
+        border-right: none;
+      }
+
+      .content td {
+        padding: 12px 18px;
+        border-right: 1.5px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .content td:last-child {
+        border-right: none;
+      }
+
+      .content tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .content tbody tr {
+        transition: background 0.15s ease;
+      }
+
+      .content tbody tr:hover {
+        background: var(--panel);
+      }
+
+      /* Emphasis on left and right edges */
+      .content table td:first-child,
+      .content table th:first-child {
+        border-left: 2px solid var(--border);
+        padding-left: 18px;
+      }
+
+      .content table td:last-child,
+      .content table th:last-child {
+        border-right: 2px solid var(--border);
+        padding-right: 18px;
+      }
+
+      /* Responsive tables - scroll on mobile */
+      @media (max-width: 768px) {
+        .content table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
       }
 
       /* SIDEBAR TITLES */
@@ -329,7 +417,7 @@ const {
         gap: 8px;
         border: 1px solid var(--border);
         border-radius: 18px;
-        min-height: 160px;
+        min-height: 160px; /* on smaller devices make 200px */
         padding: 22px 20px;
         background: var(--panel);
         color: var(--muted);
@@ -565,6 +653,8 @@ const {
         </div>
       </aside>
     </div>
+
+    <Footer />
 
     <!-- Auto-highlight active TOC section -->
     <script>

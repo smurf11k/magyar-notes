@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-import { levelFromFolder } from "../lib/lesson-nav";
+import { levelFromFolder, stripMd, orderFromPart } from "../lib/lesson-nav";
 
 const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
 
@@ -14,12 +14,12 @@ const levelFolders = Array.from(
 
 // Level descriptions
 const levelDescriptions: Record<string, string> = {
-  A1: "Just starting out? Learn basic phrases and everyday vocabulary. You'll be able to introduce yourself and have simple conversations.",
-  A2: "Building confidence! Understand familiar topics and express yourself in routine situations. Perfect for travel basics.",
-  B1: "Getting comfortable! Handle most everyday situations confidently. You can share experiences and explain your opinions.",
-  B2: "Nearly fluent! Understand complex texts and speak spontaneously. Ready for professional and academic settings.",
-  C1: "Advanced mastery! Express yourself fluently across all topics. Near-native comprehension and nuanced expression.",
-  C2: "Complete fluency! Understand virtually everything and express yourself with precision and subtlety.",
+  A1: "Щойно починаєш? Вивчи базові фрази та повсякденну лексику. Ти зможеш представитися та вести прості розмови.",
+  A2: "Набираєшся впевненості! Розумій знайомі теми та висловлюйся в типових ситуаціях. Ідеально для базових подорожей.",
+  B1: "Почуваєшся впевнено! Упевнено справляйся з більшістю повсякденних ситуацій. Можеш ділитися досвідом і пояснювати свої думки.",
+  B2: "Майже вільно! Розумій складні тексти та говори спонтанно. Підходить до професійного й академічного середовища.",
+  C1: "Високий рівень! Вільно висловлюйся на будь-які теми. Майже носій мови з глибоким розумінням і нюансами.",
+  C2: "Повна свобода! Розумій практично все та висловлюйся точно й витончено.",
 };
 
 // Level colors
@@ -59,15 +59,49 @@ const levelColors: Record<
   },
 };
 
+// Function to get first lesson URL for a level
+function getFirstLessonUrl(levelFolder: string): string {
+  const levelEntries = entries.filter((e) =>
+    e.id.startsWith(levelFolder + "/"),
+  );
+
+  if (levelEntries.length === 0) {
+    return "#"; // Fallback if no lessons
+  }
+
+  const sorted = [...levelEntries].sort((a, b) => {
+    const ap = stripMd(a.id).split("/");
+    const bp = stripMd(b.id).split("/");
+
+    const max = Math.max(ap.length, bp.length);
+    for (let i = 0; i < max; i++) {
+      const ao = orderFromPart(ap[i] ?? "");
+      const bo = orderFromPart(bp[i] ?? "");
+      if (ao !== bo) return ao - bo;
+
+      const cmp = (ap[i] ?? "").localeCompare(bp[i] ?? "");
+      if (cmp !== 0) return cmp;
+    }
+    return 0;
+  });
+
+  return "/lessons/" + stripMd(sorted[0].id);
+}
+
 // convert to human level labels (A1/A2/B1/B2/C1/C2)
 const levels = levelFolders
-  .map((folder) => ({ folder, label: levelFromFolder(folder) }))
+  .map((folder) => ({
+    folder,
+    label: levelFromFolder(folder),
+    firstLessonUrl: getFirstLessonUrl(folder),
+  }))
   .filter(
     (
       x,
     ): x is {
       folder: string;
       label: NonNullable<ReturnType<typeof levelFromFolder>>;
+      firstLessonUrl: string;
     } => !!x.label,
   );
 
@@ -90,7 +124,8 @@ levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
       />
       <h1 class="title">Magyar Notes</h1>
       <p class="subtitle">
-        Hungarian lessons & notes — structured by level. Pick a level to start.
+        Уроки та нотатки з угорської мови — структуровані за рівнями. Оберіть
+        рівень, щоб почати.
       </p>
 
       <div class="cards">
@@ -98,7 +133,7 @@ levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
           levels.map((lvl) => {
             const colors = levelColors[lvl.label];
             return (
-              <a class="card" href={`/level/${lvl.folder}`}>
+              <a class="card" href={lvl.firstLessonUrl}>
                 <div class="cardTop">
                   <div
                     class="badge"

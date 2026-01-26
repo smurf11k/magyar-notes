@@ -1,0 +1,126 @@
+---
+export interface Props {
+  paypalLink?: string;
+}
+
+const { paypalLink = "https://paypal.me/smurf11k" } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="footerContent">
+    <p class="disclaimer">
+      <strong>Примітка:</strong> я — носій угорської мови, і це мої особисті нотатки
+      для занять, хоча я не є сертифікованим викладачем угорської мови. Якщо вони
+      стануть вам в пригоді, можете підтримати мене.
+    </p>
+    <a
+      href={paypalLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="supportBtn"
+    >
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8.32 21.97a.546.546 0 0 1-.26-.32c-.03-.15-.06-.3-.06-.45l.71-4.55c.04-.26.26-.45.52-.45h3.77c2.26 0 4.02-.46 5.25-1.37 1.23-.91 2.04-2.34 2.42-4.27.18-.88.18-1.62 0-2.21a3.28 3.28 0 0 0-1.02-1.48c-.48-.39-1.08-.66-1.8-.82A12.3 12.3 0 0 0 15.02 6H7.8c-.52 0-.96.38-1.03.89L5.09 18.42c-.04.26.02.52.18.73.16.2.4.32.66.32h2.39zm9.45-15.94c1.13.21 2.05.54 2.75 1 .71.45 1.23 1.03 1.55 1.74.33.71.44 1.57.33 2.56-.43 2.25-1.42 3.94-2.97 5.06-1.55 1.13-3.67 1.69-6.36 1.69h-3.2l-.6 3.87c-.07.45-.45.78-.91.78H5.97c-.52 0-.96-.38-1.03-.89L3.26 7.31c-.07-.45.26-.88.72-.88h8.04c1.17 0 2.17.08 3.01.24.84.16 1.53.4 2.08.72.54.33.96.75 1.25 1.26.29.51.42 1.11.41 1.78 0 .04 0 .08-.01.13a.55.55 0 0 1-.02.13c.03-.01.03-.13 0-.37z"
+        ></path>
+      </svg>
+      <span>Support via PayPal</span>
+    </a>
+    <p class="copyright">
+      © {new Date().getFullYear()} Magyar Notes. Made with ❤️ for language learners.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    background: var(--panel2);
+    padding: 40px 22px;
+    margin-top: auto;
+  }
+
+  .footerContent {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .disclaimer {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .disclaimer strong {
+    color: #f3f3f3;
+    font-weight: 700;
+  }
+
+  :global([data-theme="light"]) .disclaimer strong {
+    color: #0f0f0f;
+  }
+
+  .supportBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  }
+
+  .supportBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
+  }
+
+  .supportBtn:active {
+    transform: translateY(0);
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .copyright {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 640px) {
+    .footer {
+      padding: 32px 18px;
+    }
+
+    .disclaimer {
+      font-size: 13px;
+    }
+
+    .supportBtn {
+      font-size: 14px;
+      padding: 10px 20px;
+    }
+  }
+</style>

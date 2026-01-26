@@ -67,7 +67,7 @@ const current = config[type];
   </div>
 </div>
 
-<style>
+<style is:global>
   .callout {
     margin: 20px 0;
     padding: 16px 18px;
@@ -103,6 +103,10 @@ const current = config[type];
     font-size: 14px;
     line-height: 1.6;
     color: rgba(243, 243, 243, 0.9);
+  }
+
+  [data-theme="light"] .callout-content {
+    color: rgba(15, 15, 15, 0.9);
   }
 
   .callout-content :global(p) {

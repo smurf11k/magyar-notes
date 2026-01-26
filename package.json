@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
+    "@google-cloud/text-to-speech": "^6.4.0",
     "astro": "^5.16.15",
     "mdast-util-mdx-jsx": "^3.2.0",
     "rehype-autolink-headings": "^7.1.0",

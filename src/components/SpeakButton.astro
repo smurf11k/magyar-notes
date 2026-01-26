@@ -1,0 +1,129 @@
+---
+export interface Props {
+  text: string;
+  label?: string;
+}
+
+const { text, label = "Listen" } = Astro.props;
+---
+
+<button
+  class="ttsButton"
+  data-text={text}
+  title="Якщо вимова звучить неправильно або не працює, спробуйте встановити угорський голосовий пакет на вашому пристрої."
+>
+  <svg
+    class="icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+  </svg>
+  <span>{label}</span>
+</button>
+
+<style>
+  .ttsButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+
+  .ttsButton:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  .ttsButton:active {
+    transform: translateY(0);
+  }
+
+  .ttsButton.speaking {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+  }
+
+  .ttsButton.speaking .icon {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+</style>
+
+<script>
+  // Initialize speech synthesis
+  const buttons = document.querySelectorAll(".ttsButton");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const text = button.getAttribute("data-text");
+      if (!text) return;
+
+      // Stop any ongoing speech
+      window.speechSynthesis.cancel();
+
+      // If button was already speaking, just stop
+      if (button.classList.contains("speaking")) {
+        button.classList.remove("speaking");
+        return;
+      }
+
+      // Create speech utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "hu-HU"; // Hungarian
+      utterance.rate = 0.9; // Slightly slower for learning
+      utterance.pitch = 1.0;
+
+      // Visual feedback
+      button.classList.add("speaking");
+
+      utterance.onend = () => {
+        button.classList.remove("speaking");
+      };
+
+      utterance.onerror = () => {
+        button.classList.remove("speaking");
+        console.error("Speech synthesis failed");
+      };
+
+      // Speak
+      window.speechSynthesis.speak(utterance);
+    });
+  });
+
+  // Clean up on page unload
+  window.addEventListener("beforeunload", () => {
+    window.speechSynthesis.cancel();
+  });
+</script>
