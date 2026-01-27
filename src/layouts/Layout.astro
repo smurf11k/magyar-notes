@@ -11,6 +11,13 @@ import Footer from "../components/Footer.astro";
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>Magyar Notes</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <slot />
@@ -27,6 +34,12 @@ import Footer from "../components/Footer.astro";
     --panel2: rgba(0, 0, 0, 0.02);
     --line: rgba(0, 0, 0, 0.1);
     --accent: #f97316;
+
+    --font-ui: Manrope, system-ui, -apple-system, BlinkMacSystemFont;
+    --font-reading: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-mono:
+      "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+      "Liberation Mono", monospace;
   }
 
   /* Light theme */
@@ -42,12 +55,7 @@ import Footer from "../components/Footer.astro";
 
   body {
     margin: 0;
-    font-family:
-      system-ui,
-      -apple-system,
-      Segoe UI,
-      Roboto,
-      Arial;
+    font-family: var(--font-ui);
     background: var(--bg);
     color: #f3f3f3;
     align-items: center;

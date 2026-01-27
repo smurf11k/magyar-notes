@@ -4,12 +4,14 @@ import Callout from "../../components/Callout.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { stripMd, titleFromPart, orderFromPart } from "../../lib/lesson-nav";
+import Steps from "../../components/Steps.astro";
 
 type TreeNode = {
   name: string;
   label: string;
   path: string;
   isFile: boolean;
+  isEmpty?: boolean;
   children?: TreeNode[];
 };
 
@@ -36,6 +38,14 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
     if (entry.data.title) {
       pathToTitle.set(clean, entry.data.title);
     }
+  }
+
+  const pathToEmpty = new Map<string, boolean>();
+  for (const entry of entries) {
+    const clean = stripMd(entry.id);
+    const isEmpty =
+      (entry.body ?? "").replace(/<[^>]*>/g, "").trim().length === 0;
+    pathToEmpty.set(clean, isEmpty);
   }
 
   for (const entry of entries) {
@@ -65,6 +75,7 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
           label,
           path: accum,
           isFile: isLeaf,
+          isEmpty: isLeaf ? (pathToEmpty.get(accum) ?? false) : undefined,
           children: [],
         };
         cur.children.push(child);
@@ -73,6 +84,18 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
       if (!isLeaf) child.isFile = false;
       cur = child;
     }
+  }
+
+  function pruneEmpty(nodes: TreeNode[]): TreeNode[] {
+    return nodes
+      .map((n) => ({
+        ...n,
+        children: n.children ? pruneEmpty(n.children) : [],
+      }))
+      .filter((n) => {
+        if (n.isFile) return !n.isEmpty;
+        return (n.children?.length ?? 0) > 0; // hide folders that become empty
+      });
   }
 
   function sortNodes(nodes: TreeNode[]) {
@@ -89,7 +112,7 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
   }
 
   sortNodes(root.children!);
-  return root.children!;
+  return pruneEmpty(root.children!);
 }
 
 function sortByPath(a: string, b: string) {
@@ -135,8 +158,12 @@ const levelEntries = entries.filter((e) => e.id.startsWith(levelFolder + "/"));
 const tree = buildTree(levelEntries);
 const activePath = stripMd(entry.id);
 
+const isEntryEmpty = (e: CollectionEntry<"lessons">) =>
+  (e.body ?? "").replace(/<[^>]*>/g, "").trim().length === 0;
+
 // Build prev/next navigation
 const ordered: NavItem[] = [...levelEntries]
+  .filter((e) => !isEntryEmpty(e))
   .sort((a, b) => sortByPath(a.id, b.id))
   .map((e) => {
     const clean = stripMd(e.id);
@@ -168,5 +195,5 @@ const description = entry.data.description ?? titleFromPart(levelFolder);
   prev={prev}
   next={next}
 >
-  <Content components={{ Callout }} />
+  <Content components={{ Callout, Steps }} />
 </LessonLayout>

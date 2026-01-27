@@ -6,6 +6,7 @@ export type TreeNode = {
   label: string;
   path: string;
   isFile: boolean;
+  isEmpty?: boolean;
   children?: TreeNode[];
 };
 
@@ -18,21 +19,28 @@ const isActive = node.isFile && node.path === activePath;
 ---
 
 <li>
-  {node.isFile ? (
-    <a class={"node " + (isActive ? "active" : "")} href={`/lessons/${node.path}`}>
-      {node.label}
-    </a>
-  ) : (
-    <div class="node navhead">
-      {node.label}
-    </div>
-  )}
+  {
+    node.isFile ? (
+      <a
+        class={"node " + (isActive ? "active" : "")}
+        href={`/lessons/${node.path}`}
+      >
+        {node.label}
+      </a>
+    ) : (
+      <div class="node navhead">{node.label}</div>
+    )
+  }
 
-  {node.children && node.children.length > 0 ? (
-    <ul>
-      {node.children.map((child) => (
-        <Self node={child} activePath={activePath} />
-      ))}
-    </ul>
-  ) : null}
+  {
+    node.children && node.children.length > 0 ? (
+      <ul>
+        {node.children
+          .filter((c) => !(c.isFile && c.isEmpty))
+          .map((child) => (
+            <Self node={child} activePath={activePath} />
+          ))}
+      </ul>
+    ) : null
+  }
 </li>

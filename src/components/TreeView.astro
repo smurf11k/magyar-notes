@@ -8,7 +8,9 @@ const { tree, activePath } = Astro.props as {
 ---
 
 <ul class="tree">
-  {tree.map((node) => (
-    <TreeNodeItem node={node} activePath={activePath} />
-  ))}
+  {
+    tree
+      .filter((n) => !(n.isFile && n.isEmpty))
+      .map((node) => <TreeNodeItem node={node} activePath={activePath} />)
+  }
 </ul>
