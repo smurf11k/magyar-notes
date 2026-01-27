@@ -556,8 +556,103 @@ const {
           height: auto;
         }
       }
+
+      /* MDX links ONLY (won't touch pager, tree, toc, etc.) */
+      .mdx a[href] {
+        color: inherit;
+      }
+
+      /* underline only normal content links, not headings */
+      .mdx :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) > a[href] {
+        text-decoration: none;
+        padding-bottom: 2px;
+        background-image: linear-gradient(
+          rgba(249, 115, 22, 0.55),
+          rgba(249, 115, 22, 0.55)
+        );
+        background-repeat: no-repeat;
+        background-size: 100% 1.5px;
+        background-position: 0 100%;
+      }
+
+      .mdx :not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) > a[href]:hover {
+        background-color: rgba(249, 115, 22, 0.12);
+        border-radius: 6px;
+        background-image: linear-gradient(var(--accent), var(--accent));
+      }
+
+      /* headings that are links should look like headings */
+      .mdx h1 a,
+      .mdx h2 a,
+      .mdx h3 a,
+      .mdx h4 a,
+      .mdx h5 a,
+      .mdx h6 a {
+        color: inherit;
+        text-decoration: none;
+        background: none;
+      }
+
+      /* don't mess with code blocks */
+      .mdx pre a,
+      .mdx code a {
+        color: inherit;
+        text-decoration: none;
+        background: none;
+      }
+
+      /* REVEAL TRANSLATIONS */
+      .translation {
+        display: inline-block;
+        padding: 2px 8px;
+        margin-left: 8px;
+        border-radius: 6px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: transparent;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        font-style: italic;
+        font-size: 0.95em;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .translation::before {
+        content: "";
+        opacity: 0.4;
+        margin-right: 4px;
+        font-size: 0.9em;
+      }
+
+      .translation.revealed {
+        color: var(--muted);
+        text-shadow: none;
+        background: rgba(249, 115, 22, 0.1);
+        border-color: rgba(249, 115, 22, 0.3);
+      }
+
+      .translation.revealed::before {
+        content: "";
+        margin-right: 0;
+      }
+
+      .translation:not(.revealed):hover {
+        background: rgba(249, 115, 22, 0.08);
+        border-color: rgba(249, 115, 22, 0.2);
+      }
     </style>
   </head>
+
+  <script>
+    // Reveal translation on click
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains("translation")) {
+        target.classList.toggle("revealed");
+      }
+    });
+  </script>
 
   <body>
     <Header />
@@ -576,7 +671,9 @@ const {
       <main class="content">
         {description && <p class="lessonDesc">{description}</p>}
 
-        <slot />
+        <article class="mdx">
+          <slot />
+        </article>
 
         {
           (prev || next) && (
@@ -590,7 +687,7 @@ const {
                   </div>
 
                   <div class="pagerMeta">
-                    <div class="pagerLabel">Previous</div>
+                    <div class="pagerLabel">Назад</div>
                     <div class="pagerTitle">{prev.title}</div>
                     {prev.description && (
                       <div class="pagerDesc">{prev.description}</div>
@@ -610,7 +707,7 @@ const {
                   </div>
 
                   <div class="pagerMeta">
-                    <div class="pagerLabel">Next</div>
+                    <div class="pagerLabel">Далі</div>
                     <div class="pagerTitle">{next.title}</div>
                     {next.description && (
                       <div class="pagerDesc">{next.description}</div>

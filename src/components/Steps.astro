@@ -1,0 +1,127 @@
+<div class="steps-container">
+  <slot />
+</div>
+
+<style>
+  :global(.steps-container) {
+    position: relative;
+    margin: 32px 0;
+    counter-reset: step-counter;
+
+    /* tune here */
+    --step-indent: 60px;
+    --step-circle: 40px;
+    --step-lh: 1.35;
+    --step-circle-offset: 2px;
+  }
+
+  /* One continuous line */
+  :global(.steps-container::before) {
+    content: "";
+    position: absolute;
+    left: calc((var(--step-circle) / 2) - 1px);
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: rgba(249, 115, 22, 0.35);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Step heading */
+  :global(.steps-container h3) {
+    position: relative;
+    padding-left: var(--step-indent);
+    margin: 0;
+    margin-top: 32px;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: var(--step-lh);
+    color: #fff;
+    counter-increment: step-counter;
+    z-index: 1;
+  }
+
+  :global([data-theme="light"] .steps-container h3) {
+    color: #0f0f0f;
+  }
+
+  :global(.steps-container h3:first-of-type) {
+    margin-top: 0;
+  }
+
+  /* Number circle */
+  :global(.steps-container h3::before) {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+
+    /* center on first text line + tweak */
+    top: calc(var(--step-lh) * 0.5em + var(--step-circle-offset));
+    transform: translateY(-50%);
+
+    width: var(--step-circle);
+    height: var(--step-circle);
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 16px;
+    z-index: 2;
+  }
+
+  /* Indent everything under the current step */
+  :global(.steps-container h3 ~ *) {
+    margin-left: var(--step-indent);
+  }
+
+  :global(.steps-container h3 + *) {
+    margin-top: 12px;
+  }
+
+  /* Don’t indent the next step heading */
+  :global(.steps-container h3 ~ h3) {
+    margin-left: 0;
+  }
+
+  /* Lists */
+  :global(.steps-container ul),
+  :global(.steps-container ol) {
+    padding-left: 20px;
+  }
+
+  :global(.steps-container li) {
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+
+  /* Code & callouts */
+  :global(.steps-container pre) {
+    margin: 12px 0 16px;
+  }
+
+  :global(.steps-container .callout) {
+    margin: 14px 0 16px;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    :global(.steps-container) {
+      --step-indent: 50px;
+      --step-circle: 36px;
+      /* if you want a different offset on mobile, change it here */
+      /* --step-circle-offset: 12px; */
+    }
+
+    :global(.steps-container h3) {
+      font-size: 16px;
+      margin-top: 26px;
+    }
+
+    :global(.steps-container h3 ~ *) {
+      margin-left: var(--step-indent);
+    }
+  }
+</style>
