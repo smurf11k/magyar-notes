@@ -82,48 +82,70 @@ const { text, label = "Listen" } = Astro.props;
 </style>
 
 <script>
-  // Initialize speech synthesis
   const buttons = document.querySelectorAll(".ttsButton");
+  let currentAudio: HTMLAudioElement | null = null;
+
+  function stopAll() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+    }
+    document
+      .querySelectorAll(".ttsButton.speaking")
+      .forEach((b) => b.classList.remove("speaking"));
+  }
+
+  async function playWiktionaryAudio(word: string) {
+    const res = await fetch(
+      `/.netlify/functions/pronounce?word=${encodeURIComponent(word)}`,
+    );
+
+    // For testing: do NOT fallback.
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`Netlify function failed: ${res.status} ${body}`);
+    }
+
+    const data = await res.json();
+
+    if (!data || typeof data.url !== "string") {
+      throw new Error("Function returned JSON without { url }");
+    }
+
+    currentAudio = new Audio(data.url);
+    currentAudio.crossOrigin = "anonymous";
+
+    await currentAudio.play();
+  }
 
   buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const text = button.getAttribute("data-text");
+    button.addEventListener("click", async () => {
+      const text = button.getAttribute("data-text") || "";
+
       if (!text) return;
 
-      // Stop any ongoing speech
-      window.speechSynthesis.cancel();
-
-      // If button was already speaking, just stop
       if (button.classList.contains("speaking")) {
-        button.classList.remove("speaking");
+        stopAll();
         return;
       }
 
-      // Create speech utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "hu-HU"; // Hungarian
-      utterance.rate = 0.9; // Slightly slower for learning
-      utterance.pitch = 1.0;
-
-      // Visual feedback
+      stopAll();
       button.classList.add("speaking");
 
-      utterance.onend = () => {
-        button.classList.remove("speaking");
-      };
+      try {
+        await playWiktionaryAudio(text);
 
-      utterance.onerror = () => {
+        if (currentAudio) {
+          currentAudio.onended = () => button.classList.remove("speaking");
+          currentAudio.onerror = () => button.classList.remove("speaking");
+        }
+      } catch (e) {
         button.classList.remove("speaking");
-        console.error("Speech synthesis failed");
-      };
-
-      // Speak
-      window.speechSynthesis.speak(utterance);
+        console.error(e);
+      }
     });
   });
 
-  // Clean up on page unload
-  window.addEventListener("beforeunload", () => {
-    window.speechSynthesis.cancel();
-  });
+  window.addEventListener("beforeunload", () => stopAll());
 </script>
