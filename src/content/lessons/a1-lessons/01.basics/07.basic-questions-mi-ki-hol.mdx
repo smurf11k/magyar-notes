@@ -3,22 +3,24 @@ title: Базові питальні слова (Mi? Ki? Hol?)
 description: Вчимося ставити різні типи питань за допомогою основних питальних слів
 ---
 
+import SpeakButton from "../../../../components/SpeakButton.astro";
+
 # Базові питальні слова
 
 ## Головні питальні слова
 
-| Питальне слово  | Переклад        | Вимова          | Приклад                             |
-| --------------- | --------------- | --------------- | ----------------------------------- |
-| Mi?             | Що?             | [мі]            | Mi ez? - Що це?                     |
-| Ki?             | Хто?            | [кі]            | Ki ő? - Хто він?                    |
-| Hol?            | Де?             | [хол]           | Hol vagy? - Де ти?                  |
-| Mikor?          | Коли?           | [мікор]         | Mikor jössz? - Коли прийдеш?        |
-| Miért?          | Чому?           | [міерт]         | Miért tanulsz? - Чому ти вчишся?    |
-| Hogyan? / Hogy? | Як?             | [ходьон / ходь] | Hogy vagy? - Як справи?             |
-| Hány?           | Скільки?        | [хань]          | Hány éves vagy? - Скільки років?    |
-| Mennyi?         | Скільки?        | [меньї]         | Mennyi az ára? - Скільки коштує?    |
-| Milyen?         | Який?           | [міен]          | Milyen a ház? - Який будинок?       |
-| Melyik?         | Який? / Котрий? | [мейік]         | Melyik az autód? - Яка твоя машина? |
+| Питальне слово  | Переклад        | Вимова                                        | Приклад                             |
+| --------------- | --------------- | --------------------------------------------- | ----------------------------------- |
+| Mi?             | Що?             | <SpeakButton text="Mi" label="" />            | Mi ez? - Що це?                     |
+| Ki?             | Хто?            | <SpeakButton text="Ki" label="" />            | Ki ő? - Хто він?                    |
+| Hol?            | Де?             | <SpeakButton text="Hol" label="" />           | Hol vagy? - Де ти?                  |
+| Mikor?          | Коли?           | <SpeakButton text="Mikor" label="" />         | Mikor jössz? - Коли прийдеш?        |
+| Miért?          | Чому?           | <SpeakButton text="Miért" label="" />         | Miért tanulsz? - Чому ти вчишся?    |
+| Hogyan? / Hogy? | Як?             | <SpeakButton text="Hogyan / Hogy" label="" /> | Hogy vagy? - Як справи?             |
+| Hány?           | Скільки?        | <SpeakButton text="Hány" label="" />          | Hány éves vagy? - Скільки років?    |
+| Mennyi?         | Скільки?        | <SpeakButton text="Mennyi" label="" />        | Mennyi az ára? - Скільки коштує?    |
+| Milyen?         | Який?           | <SpeakButton text="Milyen" label="" />        | Milyen a ház? - Який будинок?       |
+| Melyik?         | Який? / Котрий? | <SpeakButton text="Melyik" label="" />        | Melyik az autód? - Яка твоя машина? |
 
 ::tip
 
@@ -26,6 +28,10 @@ description: Вчимося ставити різні типи питань за
 
 - **Hány?** - для обчислюваних об'єктів (скільки книжок? скільки років?)
 - **Mennyi?** - для необчислюваних речей (скільки води? скільки часу? яка ціна?)
+
+Яка (в цього/того) ціна? може запитуватися як: **mennyi (ennek/annak) az ára?**
+
+Але найбільш вживаним є **(ez/az) mennyibe kerül?** - (це/те) скільки коштує?
 
 ::
 
@@ -37,13 +43,31 @@ description: Вчимося ставити різні типи питань за
 
 ### Основні конструкції:
 
-- **Mi ez?** [мі ез] - Що це?
-  - **Ez egy könyv.** - Це книга.
+- **Mi ez?** <SpeakButton text="Mi ez?" label="" /> - Що це?
+  - **Ez egy könyv.** <SpeakButton text="Ez egy könyv." label="" /> - Це книга.
 
-- **Mi az?** [мі оз] - Що те?
-  - **Az egy asztal.** - Те стіл.
+- **Mi az?** <SpeakButton text="Mi az?" label="" /> - Що те?
+  - **Az egy asztal.** <SpeakButton text="Az egy asztal." label="" /> - Те - стіл.
 
-- **Mi a neved?** [мі о невед] - Як тебе звуть? (буквально: що твоє ім'я?)
+::note
+
+**Mi az?**:
+
+**Mi az?** - може використовуватися і як відповідь на те коли вас покликали (коли комусь щось від вас потрібно).
+
+В такому випадку переклад буде - Що таке? (зазвичай використовують коли ви не дуже раді тому що від вас щось хочуть).
+
+Наприклад:
+
+- Anya! //Мамо!//
+- Mi az? //Що таке?//
+- Gyere velem játszani //Ходи зі мною гратися//
+
+Більш привітною і формальною відповіддю в такій ситуації буде **Tessék?** - що теж може означати "Що таке?" залежно від контексту.
+
+::
+
+- **Mi a neved?** - Як тебе звуть? (буквально: що твоє ім'я?)
   - **A nevem Anna.** - Мене звуть Анна.
 
 - **Mi a problémа?** - Яка проблема?
@@ -71,7 +95,7 @@ description: Вчимося ставити різні типи питань за
 ### Основні конструкції:
 
 - **Ki ez?** - Хто це?
-  - **Ez Péter.** - Це Петер.
+  - **Ez Péter.** - Це Петро.
 
 - **Ki vagy?** - Хто ти?
   - **Én Anna vagyok.** - Я Анна.
@@ -84,9 +108,9 @@ description: Вчимося ставити різні типи питань за
 
 ### З різними відмінками:
 
-- **Kit látsz?** [кіт латс] - Кого ти бачиш?
-- **Kinek a könyve?** [кінек о кенюве] - Чия книга?
-- **Kivel beszélsz?** [ківел беселс] - З ким розмовляєш?
+- **Kit látsz?** <SpeakButton text="Kit látsz?" label="" /> - Кого ти бачиш?
+- **Kinek a könyve?** <SpeakButton text="Kinek a könyve?" label="" /> - Чия книга?
+- **Kivel beszélsz?** <SpeakButton text="Kivel beszélsz?" label="" /> - З ким розмовляєш?
 
 ---
 
@@ -112,13 +136,22 @@ description: Вчимося ставити різні типи питань за
 
 **Пов'язані питальні слова руху**:
 
-- **Hová?** / **Hova?** [хова] - Куди? (напрямок руху)
+- **Hová?** / **Hova?** <SpeakButton text="Hová? / Hova?" label="" /> - Куди? (напрямок руху)
   - **Hova mész?** - Куди йдеш?
   - **Az iskolába megyek.** - Я йду в школу.
 
-- **Honnan?** [хоннон] - Звідки? (походження)
-  - **Honnan jössz?** - Звідки ти?
-  - **Ukrajnából jövök.** - Я з України.
+- **Honnan?** <SpeakButton text="Honnan?" label="" /> - Звідки?
+  - **Honnan jöttál?** - Звідки ти прийшов?
+  - **Ukrajnából jöttem.** - Я прийшов з України.
+
+Якщо питати про походження людини то питають так:
+
+- **Honnan valósi vagy?** - Звідки ти родом?
+  - **Magyarországból vagyok valósi.** - Я родом з Угорщини.
+- **Honnan származol?** / **Milyen a származásod?** - Звідки ти походиш? / Яка у тебе походження?
+  - **Ukrajnából származom** / **Ukrán származásom van.** - Я походжу з України. / Моє походження українське.
+
+Можна ще сказати **Ukrán a származásom**, але тоді "van" не використовується.
 
 ::
 
@@ -176,6 +209,12 @@ description: Вчимося ставити різні типи питань за
 - **Miért?** - **Mert...**
 - Чому? - Тому що...
 
+Але в більше неформальних ситуаціях частку "mert" можна опустити:
+
+- **Miért vagy fáradt?** - Чому ти втомлений?
+  - **Mert sokat dolgoztam.** - Тому що багато працював.
+  - **Sokat dolgoztam.** - Багато працював.
+
 ::
 
 ---
@@ -193,10 +232,25 @@ description: Вчимося ставити різні типи питань за
   - **Könyvekből tanulok.** - Я вчуся з книжок.
 
 - **Hogyan jutok el oda?** - Як мені туди дістатися?
-  - **Metróval jutsz el.** - Доїдеш метро.
+  - **Metróval jutsz el.** - Доїдеш на метро.
 
-- **Hogy hívják?** - Як (тебе) звуть?
-  - **Péternek hívnak.** - Мене звуть Петер.
+- **(Önt/Magát) Hogy hívják?** - Як (вас) звуть?
+  - **Péternek hívnak.** - Мене звуть Петро.
+
+- **Hogy hívják a fiát?** - Як звуть його/її/вашого сина?
+  - **Péternek hívják.** - Його звати Петро.
+
+::warning
+
+**Пропуск займенників**:
+
+- **Hogy hivják az ön fiát?** - Як звуть вашого сина? (дуже формальний варіант який легко зрозуміти без контексту)
+
+Але так як угорці полюбляють пропускати займенники, то питання перетворюється на:
+
+- **Hogy hívják a fiát?** - Як звуть його/її/вашого сина? (і це вже не настільки однозначне без контексту)
+
+::
 
 ::note
 
@@ -291,7 +345,7 @@ description: Вчимося ставити різні типи питань за
 
 - **Ki vagy?** - Хто ти?
 - **Hol lakik Anna?** - Де живе Анна?
-- **Mikor jön Péter?** - Коли прийде Петер?
+- **Mikor jön Péter?** - Коли прийде Петро?
 - **Mit csinálsz?** - Що робиш?
 
 ### Без питального слова (загальні питання):
@@ -300,7 +354,7 @@ description: Вчимося ставити різні типи питань за
 
 - **Tanár vagy?** - Ти вчитель?
 - **Itthon van?** - Він вдома?
-- **Magyarul beszélsz?** - Ти говориш угорською?
+- **Beszélsz magyarul?** - Ти говориш угорською?
 
 ---
 
@@ -308,32 +362,32 @@ description: Вчимося ставити різні типи питань за
 
 ### Діалог 1: Знайомство
 
-**A:** Ki vagy?  
-**B:** Anna vagyok. És te?  
-**A:** Péter vagyok. Hol laksz?  
-**B:** Budapesten lakom. És te?  
-**A:** Én is Budapesten.  
-**B:** Milyen a lakásod?  
-**A:** Kicsi, de kényelmes.
+- **A:** Ki vagy?
+- **B:** Anna vagyok. És te?
+- **A:** Péter vagyok. Hol laksz?
+- **B:** Budapesten lakom. És te?
+- **A:** Én is Budapesten.
+- **B:** Milyen a lakásod?
+- **A:** Kicsi, de kényelmes.
 
 ### Діалог 2: У магазині
 
-**A:** Mit keres?  
-**B:** Könyveket keresek.  
-**A:** Milyen könyveket?  
-**B:** Magyar könyveket.  
-**A:** Melyik szekrényben vannak?  
-**B:** Abban a szekrényben.  
-**A:** Mennyi az ára?  
-**B:** Kétezer forint.
+- **A:** Mit keres?
+- **B:** Könyveket keresek.
+- **A:** Milyen könyveket?
+- **B:** Magyar könyveket.
+- **A:** Melyik szekrényben vannak?
+- **B:** Abban a szekrényben.
+- **A:** Mennyi az ára?
+- **B:** Kétezer forint.
 
 ### Діалог 3: Про час
 
-**A:** Mikor kezdődik az óra?  
-**B:** Nyolc órakor.  
-**A:** Hány óra van most?  
-**B:** Most háromnegyed nyolc van.  
-**A:** Akkor még van időnk.
+- **A:** Mikor kezdődik az óra?
+- **B:** Nyolc órakor.
+- **A:** Hány óra van most?
+- **B:** Most háromnegyed nyolc van.
+- **A:** Akkor még van időnk.
 
 ---
 
@@ -377,14 +431,14 @@ description: Вчимося ставити різні типи питань за
 ### Ввічливі питання:
 
 - **Elnézést, hol van...?** - Вибачте, де...?
-- **Megkérdezhetem, hogy...?** - Можу запитати, що/як...?
+- **Megkérdezhetem (e), hogy...?** - (Чи) Можу запитати, що/як...?
 - **Tudja, hogy mikor...?** - Ви знаєте, коли...?
 
 ### У повсякденні:
 
 - **Mi a baj?** - Що сталося? (буквально: яка біда?)
 - **Ki ez a lány/fiú?** - Хто ця дівчина/хлопець?
-- **Hol a mosdó?** - Де туалет?
+- **Hol a mosdó?** - Де вбиральня? (це формальний варіант, більш неформально буде - Hol a WC?)
 - **Mikor találkozunk?** - Коли зустрінемось?
 - **Mennyibe kerül?** - Скільки коштує?
 
@@ -398,7 +452,7 @@ description: Вчимося ставити різні типи питань за
 
 1. **Hány** vs **Mennyi**:
    - ~~Mennyi éves vagy?~~ ✗ → **Hány éves vagy?** ✓
-   - ~~Hány a tej?~~ ✗ → **Mennyi tej van?** ✓
+   - ~~Hány tej van?~~ ✗ → **Mennyi tej van?** ✓
 
 2. **Milyen** vs **Melyik**:
    - **Milyen autód van?** ✓ (Яка за властивостями?)
@@ -414,23 +468,27 @@ description: Вчимося ставити різні типи питань за
 
 ## Швидкі вправи
 
-### Вправа 1: Вибрати правильне питальне слово
+::steps
 
-1. \_\_\_ ez? (Що це?) - Mi
-2. \_\_\_ vagy? (Хто ти?) - Ki
-3. \_\_\_ a könyv? (Де книга?) - Hol
-4. \_\_\_ jössz? (Коли прийдеш?) - Mikor
-5. \_\_\_ autó a tiéd? (Яка машина твоя?) - Melyik
+### Вибрати правильне питальне слово
 
-### Вправа 2: Скласти питання
+1. \_\_\_ ez? (Що це?) - //Mi//
+2. \_\_\_ vagy? (Хто ти?) - //Ki//
+3. \_\_\_ a könyv? (Де книга?) - //Hol//
+4. \_\_\_ jössz? (Коли прийдеш?) - //Mikor//
+5. \_\_\_ autó a tiéd? (Яка машина твоя?) - //Melyik//
+
+### Скласти питання
 
 Є відповідь, складіть питання:
 
-1. Ez egy könyv. → **Mi ez?**
-2. Péter vagyok. → **Ki vagy?**
-3. Budapesten lakom. → **Hol laksz?**
-4. Holnap jövök. → **Mikor jössz?**
-5. Mert fáradt vagyok. → **Miért ülsz?**
+1. Ez egy könyv. → //Mi ez?//
+2. Péter vagyok. → //Ki vagy?//
+3. Budapesten lakom. → //Hol laksz?//
+4. Holnap jövök. → //Mikor jössz?//
+5. Mert fáradt vagyok. → //Miért ülsz?//
+
+::
 
 ---
 

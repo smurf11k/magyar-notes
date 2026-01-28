@@ -3,11 +3,13 @@ title: Угорська абетка та вимова
 description: Знайомство з угорським алфавітом, особливості вимови голосних та приголосних звуків
 ---
 
+import SpeakButton from "../../../../components/SpeakButton.astro";
+
 # Угорська абетка та вимова
 
 ## Про угорську мову
 
-Угорська мова (magyar nyelv) - унікальна мова, яка не схожа на більшість європейських мов. Вона належить до фіно-угорської сім'ї мов, тому не має нічого спільного з сусідніми слов'янськими або германськими мовами.
+Угорська мова (magyar nyelv) — унікальна мова, яка не схожа на більшість європейських мов. Вона належить до фіно-угорської сім'ї мов, тому не має нічого спільного з сусідніми слов'янськими або германськими мовами.
 
 ::info
 
@@ -21,64 +23,78 @@ description: Знайомство з угорським алфавітом, ос
 
 ## Угорська абетка
 
-В угорській мові **44 літери** (включаючи діграфи — літери з двох або трьох символів).
+В угорській мові **44 літери** (включаючи диграфи — літери з двох символів, та триграфи — літери з трьох символів).
+
+::note
+
+**Примітка**:
+
+Всі диграфи та один триграф - є приголосними.
+
+::
 
 ### Повна таблиця алфавіту
 
-> Кожну літеру **потрібно слухати окремо** — угорська вимова не інтуїтивна.
-
-import SpeakButton from "../../../../components/SpeakButton.astro";
-
-| Літера | Тип             | Прослухати                            |
-| ------ | --------------- | ------------------------------------- |
-| A      | голосна         | <SpeakButton text="a" label="🔊" />   |
-| Á      | голосна (довга) | <SpeakButton text="á" label="🔊" />   |
-| B      | приголосна      | <SpeakButton text="b" label="🔊" />   |
-| C      | приголосна      | <SpeakButton text="c" label="🔊" />   |
-| Cs     | діграф          | <SpeakButton text="cs" label="🔊" />  |
-| D      | приголосна      | <SpeakButton text="d" label="🔊" />   |
-| Dz     | діграф          | <SpeakButton text="dz" label="🔊" />  |
-| Dzs    | триграф         | <SpeakButton text="dzs" label="🔊" /> |
-| E      | голосна         | <SpeakButton text="e" label="🔊" />   |
-| É      | голосна (довга) | <SpeakButton text="é" label="🔊" />   |
-| F      | приголосна      | <SpeakButton text="f" label="🔊" />   |
-| G      | приголосна      | <SpeakButton text="g" label="🔊" />   |
-| Gy     | діграф          | <SpeakButton text="gy" label="🔊" />  |
-| H      | приголосна      | <SpeakButton text="h" label="🔊" />   |
-| I      | голосна         | <SpeakButton text="i" label="🔊" />   |
-| Í      | голосна (довга) | <SpeakButton text="í" label="🔊" />   |
-| J      | приголосна      | <SpeakButton text="j" label="🔊" />   |
-| K      | приголосна      | <SpeakButton text="k" label="🔊" />   |
-| L      | приголосна      | <SpeakButton text="l" label="🔊" />   |
-| Ly     | діграф          | <SpeakButton text="ly" label="🔊" />  |
-| M      | приголосна      | <SpeakButton text="m" label="🔊" />   |
-| N      | приголосна      | <SpeakButton text="n" label="🔊" />   |
-| Ny     | діграф          | <SpeakButton text="ny" label="🔊" />  |
-| O      | голосна         | <SpeakButton text="o" label="🔊" />   |
-| Ó      | голосна (довга) | <SpeakButton text="ó" label="🔊" />   |
-| Ö      | голосна         | <SpeakButton text="ö" label="🔊" />   |
-| Ő      | голосна (довга) | <SpeakButton text="ő" label="🔊" />   |
-| P      | приголосна      | <SpeakButton text="p" label="🔊" />   |
-| Q      | приголосна      | <SpeakButton text="q" label="🔊" />   |
-| R      | приголосна      | <SpeakButton text="r" label="🔊" />   |
-| S      | приголосна      | <SpeakButton text="s" label="🔊" />   |
-| Sz     | діграф          | <SpeakButton text="esz" label="🔊" /> |
-| T      | приголосна      | <SpeakButton text="t" label="🔊" />   |
-| Ty     | діграф          | <SpeakButton text="työ" label="🔊" /> |
-| U      | голосна         | <SpeakButton text="u" label="🔊" />   |
-| Ú      | голосна (довга) | <SpeakButton text="ú" label="🔊" />   |
-| Ü      | голосна         | <SpeakButton text="ü" label="🔊" />   |
-| Ű      | голосна (довга) | <SpeakButton text="ű" label="🔊" />   |
-| V      | приголосна      | <SpeakButton text="v" label="🔊" />   |
-| W      | приголосна      | <SpeakButton text="w" label="🔊" />   |
-| X      | приголосна      | <SpeakButton text="x" label="🔊" />   |
-| Y      | приголосна      | <SpeakButton text="y" label="🔊" />   |
-| Z      | приголосна      | <SpeakButton text="z" label="🔊" />   |
-| Zs     | діграф          | <SpeakButton text="zs" label="🔊" />  |
+| Літера | Тип             | Вимова                              |
+| ------ | --------------- | ----------------------------------- |
+| A      | голосна         | <SpeakButton text="a" label="" />   |
+| Á      | голосна (довга) | <SpeakButton text="á" label="" />   |
+| B      | приголосна      | <SpeakButton text="b" label="" />   |
+| C      | приголосна      | <SpeakButton text="c" label="" />   |
+| Cs     | диграф          | <SpeakButton text="cs" label="" />  |
+| D      | приголосна      | <SpeakButton text="d" label="" />   |
+| Dz     | диграф          | <SpeakButton text="dz" label="" />  |
+| Dzs    | триграф         | <SpeakButton text="dzs" label="" /> |
+| E      | голосна         | <SpeakButton text="e" label="" />   |
+| É      | голосна (довга) | <SpeakButton text="é" label="" />   |
+| F      | приголосна      | <SpeakButton text="f" label="" />   |
+| G      | приголосна      | <SpeakButton text="g" label="" />   |
+| Gy     | диграф          | <SpeakButton text="gy" label="" />  |
+| H      | приголосна      | <SpeakButton text="h" label="" />   |
+| I      | голосна         | <SpeakButton text="i" label="" />   |
+| Í      | голосна (довга) | <SpeakButton text="í" label="" />   |
+| J      | приголосна      | <SpeakButton text="j" label="" />   |
+| K      | приголосна      | <SpeakButton text="k" label="" />   |
+| L      | приголосна      | <SpeakButton text="l" label="" />   |
+| Ly     | диграф          | <SpeakButton text="ly" label="" />  |
+| M      | приголосна      | <SpeakButton text="m" label="" />   |
+| N      | приголосна      | <SpeakButton text="n" label="" />   |
+| Ny     | диграф          | <SpeakButton text="ny" label="" />  |
+| O      | голосна         | <SpeakButton text="o" label="" />   |
+| Ó      | голосна (довга) | <SpeakButton text="ó" label="" />   |
+| Ö      | голосна         | <SpeakButton text="ö" label="" />   |
+| Ő      | голосна (довга) | <SpeakButton text="ő" label="" />   |
+| P      | приголосна      | <SpeakButton text="p" label="" />   |
+| Q      | приголосна      | <SpeakButton text="q" label="" />   |
+| R      | приголосна      | <SpeakButton text="r" label="" />   |
+| S      | приголосна      | <SpeakButton text="s" label="" />   |
+| Sz     | диграф          | <SpeakButton text="esz" label="" /> |
+| T      | приголосна      | <SpeakButton text="t" label="" />   |
+| Ty     | диграф          | <SpeakButton text="työ" label="" /> |
+| U      | голосна         | <SpeakButton text="u" label="" />   |
+| Ú      | голосна (довга) | <SpeakButton text="ú" label="" />   |
+| Ü      | голосна         | <SpeakButton text="ü" label="" />   |
+| Ű      | голосна (довга) | <SpeakButton text="ű" label="" />   |
+| V      | приголосна      | <SpeakButton text="v" label="" />   |
+| W      | приголосна      | <SpeakButton text="w" label="" />   |
+| X      | приголосна      | <SpeakButton text="x" label="" />   |
+| Y      | приголосна      | <SpeakButton text="y" label="" />   |
+| Z      | приголосна      | <SpeakButton text="z" label="" />   |
+| Zs     | диграф          | <SpeakButton text="zs" label="" />  |
 
 ::tip
 
-**Про ö / ő / ü / ű**:
+**Лайфхак для вимови**:
+
+<img
+  src="https://media.tenor.com/3ooshA_DJfAAAAAe/cat-react.png"
+  style="
+    float: right;
+    max-height: 100px;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+"
+/>
 
 - **ö** — вимовляйте як **е**, але з округленими губами
 - **ő** — довге **ö**
@@ -109,24 +125,24 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 Зміна довжини голосної **міняє значення слова**.
 
-Наприклад **ujj** (палець) i **új** (новий).
+Наприклад: **ujj** (палець) i **új** (новий).
 
 ::
 
 ---
 
-## Діграфи (2–3 літери = 1 звук)
+## Диграфи (2 літери = 1 звук)
 
-| Діграф | Прослухати                            |
-| ------ | ------------------------------------- |
-| cs     | <SpeakButton text="cs" label="🔊" />  |
-| sz     | <SpeakButton text="esz" label="🔊" /> |
-| zs     | <SpeakButton text="zs" label="🔊" />  |
-| gy     | <SpeakButton text="gy" label="🔊" />  |
-| ty     | <SpeakButton text="työ" label="🔊" /> |
-| ny     | <SpeakButton text="ny" label="🔊" />  |
-| dz     | <SpeakButton text="dz" label="🔊" />  |
-| dzs    | <SpeakButton text="dzs" label="🔊" /> |
+| Диграф | Вимова                              |
+| ------ | ----------------------------------- |
+| cs     | <SpeakButton text="cs" label="" />  |
+| sz     | <SpeakButton text="esz" label="" /> |
+| zs     | <SpeakButton text="zs" label="" />  |
+| gy     | <SpeakButton text="gy" label="" />  |
+| ty     | <SpeakButton text="työ" label="" /> |
+| ny     | <SpeakButton text="ny" label="" />  |
+| dz     | <SpeakButton text="dz" label="" />  |
+| dzs    | <SpeakButton text="dzs" label="" /> |
 
 ---
 
@@ -134,12 +150,12 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 В угорській мові наголос **ЗАВЖДИ** падає на **перший склад**.
 
-| Слово    | Прослухати                                 |
-| -------- | ------------------------------------------ |
-| szépen   | <SpeakButton text="szépen" label="🔊" />   |
-| köszönöm | <SpeakButton text="köszönöm" label="🔊" /> |
-| magyar   | <SpeakButton text="magyar" label="🔊" />   |
-| Budapest | <SpeakButton text="Budapest" label="🔊" /> |
+| Слово    | Вимова                                   |
+| -------- | ---------------------------------------- |
+| szépen   | <SpeakButton text="szépen" label="" />   |
+| köszönöm | <SpeakButton text="köszönöm" label="" /> |
+| magyar   | <SpeakButton text="magyar" label="" />   |
+| Budapest | <SpeakButton text="Budapest" label="" /> |
 
 ::danger
 
@@ -147,7 +163,7 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 Навіть у дуже довгих словах.
 
-Наприклад: _elkelkáposztástalanítani_ <SpeakButton text="elkelkáposztástalanítani" label="🔊" />
+Наприклад: [**összehasonlíthatatlanul**](https://forvo.com/search/%C3%B6sszehasonl%C3%ADthatatlanul/)
 
 ::
 
@@ -157,45 +173,49 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Прості слова
 
-| Hungarian | English | Listen                                   |
-| --------- | ------- | ---------------------------------------- |
-| anya      | мама    | <SpeakButton text="anya" label="🔊" />   |
-| apa       | тато    | <SpeakButton text="apa" label="🔊" />    |
-| víz       | вода    | <SpeakButton text="víz" label="🔊" />    |
-| tej       | молоко  | <SpeakButton text="tej" label="🔊" />    |
-| kenyér    | хліб    | <SpeakButton text="kenyér" label="🔊" /> |
-| sajt      | сир     | <SpeakButton text="sajt" label="🔊" />   |
-| szép      | гарний  | <SpeakButton text="szép" label="🔊" />   |
-| jó        | добрий  | <SpeakButton text="jó" label="🔊" />     |
-| rossz     | поганий | <SpeakButton text="rossz" label="🔊" />  |
-| nagy      | великий | <SpeakButton text="nagy" label="🔊" />   |
+| Угоською | Українською | Вимова                                 |
+| -------- | ----------- | -------------------------------------- |
+| anya     | мама        | <SpeakButton text="anya" label="" />   |
+| apa      | тато        | <SpeakButton text="apa" label="" />    |
+| víz      | вода        | <SpeakButton text="víz" label="" />    |
+| tej      | молоко      | <SpeakButton text="tej" label="" />    |
+| kenyér   | хліб        | <SpeakButton text="kenyér" label="" /> |
+| sajt     | сир         | <SpeakButton text="sajt" label="" />   |
+| szép     | гарний      | <SpeakButton text="szép" label="" />   |
+| jó       | добрий      | <SpeakButton text="jó" label="" />     |
+| rossz    | поганий     | <SpeakButton text="rossz" label="" />  |
+| nagy     | великий     | <SpeakButton text="nagy" label="" />   |
 
 ---
 
 ## Завдання
 
-### Завдання 1: Вивчити абетку
+::steps
 
-- Прослухати вимову всіх літер
+### Вивчити абетку
+
+- Вимову всіх літер
 - Повторити вголос кожну літеру 5 разів
 - Особливу увагу приділити: á, é, ö, ő, ü, ű
 
-### Завдання 2: Діграфи
+### Диграфи
 
-- Вивчити всі діграфи (cs, sz, zs, gy, ty, ny, dz, dzs)
+- Вивчити всі диграфи (cs, sz, zs, gy, ty, ny, dz, dzs)
 - Потренуватись вимовляти: cs-sz, s-sz, z-zs
 
-### Завдання 3: Перші слова
+### Перші слова
 
-- Вивчити 10 простих слів зверху
-- Записати себе на диктофон і порівняти з правильною вимовою
+- Вивчити 10 простих слів
+- Можете записати себе на диктофон і порівняти з правильною вимовою
 - Повторювати до тих пір, поки не буде звучати схоже
 
-### Завдання 4: Наголос
+### Наголос
 
 - Взяти будь-які 10 угорських слів
 - Визначити перший склад
 - Вимовити з правильним наголосом
+
+::
 
 ---
 
@@ -205,9 +225,11 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 **Ресурси для практики**:
 
-- Forvo.com - база даних вимови слів носіями
+- [Forvo.com](https://forvo.com/) - база даних вимови слів носіями
 - YouTube канали з угорською вимовою
-- Програми для тренування вимови (Speechling, etc.)
+- [Magyar felfedező: Magyar Ábécé](https://magyarfelfedezo.hu/courses/magyar-felfedezo-1/lessons/3-lecke-a-magyar-abece/) - інтерактивні завдання та флеш-карти для закріплення знань про абетку.
+- [Írás munkafüzet betük](/additional/Iras-Munkafuzet-betuk.pdf) - вправи для письма літер
+- [Пісня про абетку](https://www.youtube.com/watch?v=wdgd91JHYVM)
 
 ::
 

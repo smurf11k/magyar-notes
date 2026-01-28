@@ -3,23 +3,25 @@ title: Базові привітання та знайомство
 description: Вчимося вітатися, прощатися та представлятися угорською мовою
 ---
 
+import SpeakButton from "../../../../components/SpeakButton.astro";
+
 # Базові привітання та знайомство
 
 ## Привітання на різний час доби
 
 ### Формальні привітання:
 
-- **Jó reggelt!** [йо реггелт] - Доброго ранку! (до ~9 ранку)
-- **Jó napot!** [йо нопот] - Добридень! (9:00-18:00)
-- **Jó estét!** [йо ештет] - Добрий вечір! (після 18:00)
-- **Jó éjszakát!** [йо ейсокат] - Доброї ночі! (перед сном)
+- **Jó reggelt!** <SpeakButton text="Jó reggelt!" label="" /> - Доброго ранку! (до ~9 ранку)
+- **Jó napot!** <SpeakButton text="Jó napot!" label="" /> - Добрий день! (9:00-18:00)
+- **Jó estét!** <SpeakButton text="Jó estét!" label="" /> - Добрий вечір! (після 18:00)
+- **Jó éjszakát!** <SpeakButton text="Jó éjszakát!" label="" /> - Доброї ночі! (перед сном)
 
 ### Неформальні привітання:
 
-- **Szia!** [сіо] - Привіт! (до однієї особи)
-- **Sziasztok!** [сіосток] - Привіт! (до кількох осіб)
-- **Helló!** [хелло] - Привіт! (універсальне)
-- **Szervusz!** [сервус] - Привіт!/Бувай! (старомодне, але досі використовується)
+- **Szia!** <SpeakButton text="Szia!" label="" /> - Привіт! (до однієї особи)
+- **Sziasztok!** <SpeakButton text="Sziasztok!" label="" /> - Привіт! (до кількох осіб)
+- **Helló!** <SpeakButton text="Helló!" label="" /> - Привіт! (універсальне)
+- **Szervusz!** <SpeakButton text="Szervusz!" label="" /> - Привіт! (старомодне, але досі використовується)
 
 ::info
 
@@ -35,22 +37,23 @@ description: Вчимося вітатися, прощатися та предс
 
 ### Формально:
 
-- **Viszontlátásra!** [вісонтлаташро] - До побачення!
-- **Viszlát!** [віслат] - До побачення! (коротка форма)
-- **Viszonthallásra!** [вісонтхоллашро] - До почуття! (по телефону)
+- **Viszontlátásra!** <SpeakButton text="Viszontlátásra!" label="" /> - До побачення!
+- **Viszlát!** <SpeakButton text="Viszlát!" label="" /> - До побачення! (коротка форма)
+- **Viszonthallásra!** <SpeakButton text="Viszonthallásra!" label="" /> - До зв'язку! (по телефону)
 
 ### Неформально:
 
-- **Szia!** / **Sziasztok!** - Бувай! / Бувайте!
-- **Szervusz!** - Бувай!
-- **Puszi!** [пусі] - Цьомки! (дуже неформально, між друзями)
+- **Szia!** / **Sziasztok!** <SpeakButton text="Szia / Sziasztok" label="" /> - Бувай! / Бувайте!
+- **Szervusz!** <SpeakButton text="Szervusz!" label="" /> - Бувай!
+- **Puszi!** <SpeakButton text="Puszi!" label="" /> - Цьомки! (дуже неформально, між друзями)
+- **Pápá!** <SpeakButton text="Pápá!" label="" /> - Папа! (дуже неформально, не так часто використовують)
 
 ### Інші корисні фрази:
 
-- **Viszlát később!** [віслат кешебб] - Побачимось пізніше!
-- **Holnap találkozunk!** [холноп толалкозунк] - Побачимось завтра!
-- **Jó utat!** [йо утот] - Щасливої дороги!
-- **Szép napot!** [сеп нопот] - Гарного дня!
+- **Viszlát később!** <SpeakButton text="Viszlát később!" label="" /> - Побачимось пізніше!
+- **Holnap találkozunk!** <SpeakButton text="Holnap találkozunk!" label="" /> - Побачимось завтра!
+- **Jó utat!** <SpeakButton text="Jó utat!" label="" /> - Щасливої дороги! (буквально: хорошої дороги)
+- **Szép napot!** <SpeakButton text="Szép napot!" label="" /> - Гарного дня!
 
 ---
 
@@ -60,18 +63,18 @@ description: Вчимося вітатися, прощатися та предс
 
 **Формально:**
 
-- **A nevem...** [о невем] - Мене звуть...
-- **...vagyok** [водьок] - Я є...
+- **A nevem...** <SpeakButton text="A nevem" label="" /> - Моє їм'я...
+- **Az én nevem...** <SpeakButton text="Az én nevem" label="" /> - Моє їм'я...
 
 **Неформально:**
 
-- **...vagyok** - Я...
-- **Én ...** [ен] - Я...
+- **...vagyok** <SpeakButton text="vagyok" label="" /> - Я...
+- **Én ...** <SpeakButton text="Én" label="" /> - Я...
 
 ### Приклади:
 
-- **A nevem Anna vagyok.** - Мене звуть Анна.
-- **Péter vagyok.** - Я Петер.
+- **A nevem Anna.** - Мене звуть Анна.
+- **Péter vagyok.** - Я Петро.
 - **Én Katalin vagyok.** - Я Каталін.
 
 ::tip
@@ -90,27 +93,25 @@ description: Вчимося вітатися, прощатися та предс
 
 **Формально:**
 
-- **Mi a neve?** [мі о неве] - Як вас звуть? (до однієї особи)
-- **Hogy hívják?** [ходь хівйак] - Як вас звуть?
+- **Mi a neve?** <SpeakButton text="Mi a neve?" label="" /> - Як вас звуть? (до однієї особи)
+- **Hogy hívják?** <SpeakButton text="Hogy hívják?" label="" /> - Як вас звуть?
 
 **Неформально:**
 
-- **Mi a neved?** [мі о неved] - Як тебе звуть?
-- **Hogy hívnak?** [ходь хівнок] - Як тебе звуть?
+- **Mi a neved?** <SpeakButton text="Mi a neved?" label="" /> - Як тебе звуть?
+- **Hogy hívnak?** <SpeakButton text="Hogy hívnak?" label="" /> - Як тебе звуть?
 
 ### Відповіді:
 
-- **A nevem...** - Мене звуть...
-- **Engem...-nak/nek hívnak** - Мене звуть... (буквально: мене називають)
+- **A nevem...** <SpeakButton text="A nevem..." label="" /> - Мене звуть...
+- **Engem...-nak/nek hívnak** <SpeakButton text="Engem...-nak/nek hívnak" label="" /> - Мене звуть... (буквально: мене називають)
 
 ### Діалог-приклад:
 
-**A:** Jó napot! Mi a neve?  
-**B:** Jó napot! A nevem Kovács János. És önt?  
-**A:** Szabó Péter vagyok. Örülök, hogy megismerhetem.  
-**B:** Én is örülök.
-
-_(Переклад: Добридень! Як вас звуть? - Добридень! Мене звуть Ковач Янош. А вас? - Я Сабо Петер. Радий познайомитись. - Я теж радий.)_
+- **A:** Jó napot! Mi a neve? //Добридень! Як вас звуть?//
+- **B:** Jó napot! A nevem Kovács János. És önt? //Добридень! Мене звуть Ковач Янош. А вас?//
+- **A:** Szabó Péter vagyok. Örülök, hogy megismerhetem. //Я Сабо Петро. Радий познайомитись.//
+- **B:** Én is örülök. //Я теж радий.//
 
 ---
 
@@ -118,20 +119,20 @@ _(Переклад: Добридень! Як вас звуть? - Добриде
 
 ### Обов'язково до вивчення:
 
-- **Köszönöm** [кесенем] - Дякую
-- **Kérem** [керем] - Будь ласка / Прошу
-- **Igen** [іген] - Так
-- **Nem** [нем] - Ні
-- **Elnézést** [елнезешт] - Вибачте
-- **Bocsánat** [бочанот] - Перепрошую
-- **Szívesen** [сівешен] - Будь ласка (у відповідь на дякую)
-- **Nincs mit** [нінчміт] - Нема за що
+- **Köszönöm** <SpeakButton text="Köszönöm" label="" /> - Дякую
+- **Kérem** <SpeakButton text="Kérem" label="" /> - Будь ласка / Прошу
+- **Igen** <SpeakButton text="Igen" label="" /> - Так
+- **Nem** <SpeakButton text="Nem" label="" /> - Ні
+- **Elnézést** <SpeakButton text="Elnézést" label="" /> - Перепрошую
+- **Bocsánat** <SpeakButton text="Bocsánat" label="" /> - Вибачте
+- **Szívesen** <SpeakButton text="Szívesen" label="" /> - Будь ласка (у відповідь на дякую)
+- **Nincs mit** <SpeakButton text="Nincs mit" label="" /> - Нема за що
 
 ### Додаткові фрази:
 
-- **Örülök, hogy megismerhetem** [ерюлек ходь мегішмерхетем] - Радий/а познайомитись
-- **Nagyon szépen köszönöm** [нодьон сепен кесенем] - Дуже дякую
-- **Kérem szépen** [керем сепен] - Будь ласка (більш ввічливо)
+- **Örülök, hogy megismerhetem** <SpeakButton text="Örülök, hogy megismerhetem" label="" /> - Радий/а познайомитись
+- **Nagyon szépen köszönöm** <SpeakButton text="Nagyon szépen köszönöm" label="" /> - Дуже дякую
+- **Kérem szépen** <SpeakButton text="Kérem szépen" label="" /> - Будь ласка (більш ввічливо)
 
 ::warning
 
@@ -151,32 +152,33 @@ _(Переклад: Добридень! Як вас звуть? - Добриде
 
 **Формально:**
 
-- **Hogy van?** [ходь вон] - Як справи? (до однієї особи)
-- **Hogy vannak?** [ходь воннок] - Як справи? (до кількох осіб)
+- **Hogy van?** <SpeakButton text="Hogy van?" label="" /> - Як справи? (до однієї особи)
+- **Hogy vannak?** <SpeakButton text="Hogy vannak?" label="" /> - Як справи? (до кількох осіб)
 
 **Неформально:**
 
-- **Hogy vagy?** [ходь водь] - Як справи?
-- **Mi újság?** [мі уйшаг] - Що нового?
-- **Hogy megy?** [ходь медь] - Як іде?
+- **Hogy vagy?** <SpeakButton text="Hogy vagy?" label="" /> - Як справи?
+- **Mi újság?** <SpeakButton text="Mi újság?" label="" /> - Що нового?
+- **Mizujs?** <SpeakButton text="Mizujs?" label="" /> - Що нового? (скорочено, більш сленговий вираз)
+- **Hogy ityeg? (a fityeg)** <SpeakButton text="Hogy ityeg?" label="" /> - Як справи? (дуже неформально, трохи устарівший сленговий вираз)
 
 ### Відповіді:
 
 **Позитивні:**
 
-- **Jól, köszönöm** [йол кесенем] - Добре, дякую
-- **Nagyon jól** [нодьон йол] - Дуже добре
-- **Köszönöm, jól. És ön/te?** - Дякую, добре. А ви/ти?
+- **Jól, köszönöm** <SpeakButton text="Jól, köszönöm" label="" /> - Добре, дякую
+- **Nagyon jól** <SpeakButton text="Nagyon jól" label="" /> - Дуже добре
+- **Köszönöm, jól. És ön/te?** <SpeakButton text="Köszönöm, jól. És ön/te?" label="" /> - Дякую, добре. А ви/ти?
 
 **Нейтральні:**
 
-- **Rendben** [рендбен] - Нормально
-- **Úgy ahogy** [удь оходь] - Так собі
+- **Rendben** <SpeakButton text="Rendben" label="" /> - Нормально
+- **Úgy ahogy** <SpeakButton text="Úgy ahogy" label="" /> - Так собі (більш буквально: так як є)
 
 **Негативні:**
 
-- **Nem túl jól** [нем тул йол] - Не дуже добре
-- **Rosszul** [россул] - Погано
+- **Nem túl jól** <SpeakButton text="Nem túl jól" label="" /> - Не дуже добре
+- **Rosszul** <SpeakButton text="Rosszul" label="" /> - Погано
 
 ---
 
@@ -184,47 +186,51 @@ _(Переклад: Добридень! Як вас звуть? - Добриде
 
 ### Неформальний:
 
-**A:** Szia! Én Péter vagyok. Te?  
-**B:** Szia! Anna vagyok. Örülök!  
-**A:** Én is. Hogy vagy?  
-**B:** Jól, köszönöm. És te?  
-**A:** Köszönöm, szintén jól.
+- **A:** Szia! Én Péter vagyok. Te?
+- **B:** Szia! Anna vagyok. Örülök!
+- **A:** Én is. Hogy vagy?
+- **B:** Jól, köszönöm. És te?
+- **A:** Köszönöm, szintén jól.
 
 ### Формальний:
 
-**A:** Jó napot! A nevem Kovács István.  
-**B:** Jó napot! Nagy Mária vagyok. Örülök, hogy megismerhetem.  
-**A:** Én is örülök. Hogy van?  
-**B:** Köszönöm, jól. És ön?  
-**A:** Köszönöm szépen, szintén jól vagyok.
+- **A:** Jó napot! A nevem Kovács István.
+- **B:** Jó napot! Nagy Mária vagyok. Örülök, hogy megismerhetem.
+- **A:** Én is örülök. Hogy van?
+- **B:** Köszönöm, jól. És ön?
+- **A:** Köszönöm szépen, szintén jól vagyok.
 
 ---
 
 ## Завдання
 
-### Завдання 1: Вивчити привітання
+::steps
+
+### Вивчити привітання
 
 - Вивчити всі привітання на різний час доби
 - Практикувати вимову 10 разів кожне
-- Записати себе та перевірити вимову
+- Можна ще записати себе та перевірити вимову
 
-### Завдання 2: Представлення
+### Представлення
 
-- Навчитися представлятися 3 різними способами
+- Навчитися представлятися трьома різними способами
 - Вивчити питання "Як тебе/вас звуть?" в обох формах
 - Скласти мінідіалог знайомства
 
-### Завдання 3: Ввічливі фрази
+### Ввічливі фрази
 
 - Вивчити 8 основних ввічливих фраз
 - Потренувати їх у різних контекстах
 - Створити власні приклади речень
 
-### Завдання 4: Діалоги
+### Діалоги
 
 - Вивчити напам'ять один формальний діалог
 - Вивчити напам'ять один неформальний діалог
 - Практикувати з партнером або самостійно (різні ролі)
+
+::
 
 ---
 
@@ -236,23 +242,15 @@ _(Переклад: Добридень! Як вас звуть? - Добриде
 
 Угорці серйозно ставляться до формальності у спілкуванні. З незнайомими людьми, людьми старшого віку та у робочому середовищі завжди використовуйте формальні звертання, поки вам не запропонують перейти на "ти".
 
+Надавайте перевагу **"ön"**, так як **"maga"** в деяких ситуаціях може вважатися трохи грубим.
+
 ::
 
 ::info
 
 **Коли переходити на "ти"**:
 
-Зазвичай молоді люди (студенти, однолітки) швидко переходять на "ти". З колегами та знайомими це може зайняти більше часу. Завжди чекайте, поки старша особа запропонує перейти на "ти".
-
-::
-
-::tip
-
-**Жести при знайомстві**:
-
-- Потискання руки - стандартне привітання у формальних ситуаціях
-- Поцілунок в обидві щоки - між друзями та родичами
-- Помахати рукою - неформальне привітання на відстані
+Зазвичай молоді люди (студенти, однолітки) швидко переходять на "ти". З колегами та старшими знайомими це може зайняти більше часу. Завжди чекайте, поки старша особа запропонує перейти на "ти".
 
 ::
 

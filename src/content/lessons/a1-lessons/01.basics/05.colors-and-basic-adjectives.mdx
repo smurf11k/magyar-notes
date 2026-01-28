@@ -3,23 +3,27 @@ title: Кольори та базові прикметники
 description: Вчимося описувати речі за допомогою кольорів та простих прикметників
 ---
 
+import SpeakButton from "../../../../components/SpeakButton.astro";
+
 # Кольори та базові прикметники
 
 ## Основні кольори
 
-| Українською  | Угорською     | Вимова          |
-| ------------ | ------------- | --------------- |
-| білий        | fehér         | [фехер]         |
-| чорний       | fekete        | [фекете]        |
-| червоний     | piros / vörös | [пірош / верош] |
-| синій        | kék           | [кек]           |
-| жовтий       | sárga         | [шарго]         |
-| зелений      | zöld          | [зелд]          |
-| помаранчевий | narancs       | [норончш]       |
-| фіолетовий   | lila          | [ліло]          |
-| рожевий      | rózsaszín     | [рожосін]       |
-| коричневий   | barna         | [борно]         |
-| сірий        | szürke        | [сюрке]         |
+| Українською  | Угорською     | Вимова                                        |
+| ------------ | ------------- | --------------------------------------------- |
+| білий        | fehér         | <SpeakButton text="Fehér" label="" />         |
+| чорний       | fekete        | <SpeakButton text="Fekete" label="" />        |
+| червоний     | piros / vörös | <SpeakButton text="Piros / Vörös" label="" /> |
+| синій        | kék           | <SpeakButton text="Kék" label="" />           |
+| жовтий       | sárga         | <SpeakButton text="Sárga" label="" />         |
+| зелений      | zöld          | <SpeakButton text="Zöld" label="" />          |
+| помаранчевий | narancs       | <SpeakButton text="Narancs" label="" />       |
+| фіолетовий   | lila          | <SpeakButton text="Lila" label="" />          |
+| рожевий      | rózsaszín     | <SpeakButton text="Rózsaszín" label="" />     |
+| коричневий   | barna         | <SpeakButton text="Barna" label="" />         |
+| сірий        | szürke        | <SpeakButton text="Szürke" label="" />        |
+
+**Szín** - означає колір.
 
 ::warning
 
@@ -30,6 +34,10 @@ description: Вчимося описувати речі за допомогою 
 
 Для початківців краще використовувати **piros**.
 
+Також **narancs** - може означати і фрукт апельсин. Контекст важливий.
+
+Якщо казати колір апельсину то зазвичай кажуть: **narancssárga narancs**. Так як оранжевий є відтінком жовтого.
+
 ::
 
 ---
@@ -38,25 +46,25 @@ description: Вчимося описувати речі за допомогою 
 
 ### Світлі відтінки:
 
-- **világos** [вілагош] = світлий
+- **világos** <SpeakButton text="Világos" label="" /> = світлий
   - világos kék = світло-синій
   - világos zöld = світло-зелений
   - világos barna = світло-коричневий
 
 ### Темні відтінки:
 
-- **sötét** [шетет] = темний
+- **sötét** <SpeakButton text="Sötét" label="" /> = темний
   - sötét kék = темно-синій
   - sötét zöld = темно-зелений
   - sötét szürke = темно-сірий
 
 ### Яскраві/бліді кольори:
 
-- **élénk** [еленк] = яскравий
+- **élénk** <SpeakButton text="Élénk" label="" /> = яскравий
   - élénk piros = яскраво-червоний
   - élénk sárga = яскраво-жовтий
 
-- **halvány** [холвань] = блідий
+- **halvány** <SpeakButton text="Halvány" label="" /> = блідий
   - halvány rózsaszín = блідо-рожевий
   - halvány kék = блідо-синій
 
@@ -75,18 +83,18 @@ description: Вчимося описувати речі за допомогою 
 
 ## Прикметники розміру
 
-| Українською | Угорською   | Вимова       | Антонім     |
-| ----------- | ----------- | ------------ | ----------- |
-| великий     | nagy        | [нодь]       | kicsi / kis |
-| маленький   | kicsi / kis | [кічі / кіш] | nagy        |
-| довгий      | hosszú      | [хоссу]      | rövid       |
-| короткий    | rövid       | [ревід]      | hosszú      |
-| широкий     | széles      | [селеш]      | keskeny     |
-| вузький     | keskeny     | [кешкень]    | széles      |
-| високий     | magas       | [могош]      | alacsony    |
-| низький     | alacsony    | [олочонь]    | magas       |
-| товстий     | vastag      | [воштог]     | vékony      |
-| тонкий      | vékony      | [веконь]     | vastag      |
+| Українською | Угорською   | Вимова                                      | Антонім     |
+| ----------- | ----------- | ------------------------------------------- | ----------- |
+| великий     | nagy        | <SpeakButton text="Nagy" label="" />        | kicsi / kis |
+| маленький   | kicsi / kis | <SpeakButton text="Kicsi / Kis" label="" /> | nagy        |
+| довгий      | hosszú      | <SpeakButton text="Hosszú" label="" />      | rövid       |
+| короткий    | rövid       | <SpeakButton text="Rövid" label="" />       | hosszú      |
+| широкий     | széles      | <SpeakButton text="Széles" label="" />      | keskeny     |
+| вузький     | keskeny     | <SpeakButton text="Keskeny" label="" />     | széles      |
+| високий     | magas       | <SpeakButton text="Magas" label="" />       | alacsony    |
+| низький     | alacsony    | <SpeakButton text="Alacsony" label="" />    | magas       |
+| товстий     | vastag      | <SpeakButton text="Vastag" label="" />      | vékony      |
+| тонкий      | vékony      | <SpeakButton text="Vékony" label="" />      | vastag      |
 
 ::note
 
@@ -103,12 +111,12 @@ description: Вчимося описувати речі за допомогою 
 
 ## Прикметники форми
 
-- **kerek** [керек] - круглий
-- **négyzet alakú** [недьзет олоку] - квадратний
-- **háromszög alakú** [харомсег олоку] - трикутний
-- **ovális** [оваліш] - овальний
-- **egyenes** [еджене́ш] - прямий
-- **görbe** [гербе] - кривий
+- **kerek** <SpeakButton text="Kerek" label="" /> - круглий
+- **négyzet alakú** <SpeakButton text="Négyzet alakú" label="" /> - квадратний
+- **háromszög alakú** <SpeakButton text="Háromszög alakú" label="" /> - трикутний
+- **ovális** <SpeakButton text="Ovális" label="" /> - овальний
+- **egyenes** <SpeakButton text="Egyenes" label="" /> - прямий
+- **görbe** <SpeakButton text="Görbe" label="" /> - кривий
 
 ---
 
@@ -116,26 +124,26 @@ description: Вчимося описувати речі за допомогою 
 
 ### Позитивні:
 
-- **jó** [йо] - хороший, добрий
-- **szép** [сеп] - гарний, красивий
-- **új** [уй] - новий
-- **tiszta** [тісто] - чистий
-- **friss** [фріш] - свіжий
-- **könnyű** [кеньню] - легкий (по вазі/складності)
-- **érdekes** [ердекеш] - цікавий
-- **kellemes** [келлемеш] - приємний
+- **jó** <SpeakButton text="Jó" label="" /> - хороший, добрий
+- **szép** <SpeakButton text="Szép" label="" /> - гарний, красивий
+- **új** <SpeakButton text="Új" label="" /> - новий
+- **tiszta** <SpeakButton text="Tiszta" label="" /> - чистий
+- **friss** <SpeakButton text="Friss" label="" /> - свіжий
+- **könnyű** <SpeakButton text="Könnyű" label="" /> - легкий (по вазі/складності)
+- **érdekes** <SpeakButton text="Érdekes" label="" /> - цікавий
+- **kellemes** <SpeakButton text="Kellemes" label="" /> - приємний
 
 ### Негативні:
 
-- **rossz** [росс] - поганий
-- **csúnya** [чунья] - потворний
-- **régi** [реґі] - старий
-- **piszkos** [піскош] - брудний
-- **nehéz** [нехез] - важкий
-- **unalmas** [уноломош] - нудний
-- **kellemetlen** [келлемлен] - неприємний
+- **rossz** <SpeakButton text="Rossz" label="" /> - поганий
+- **csúnya** <SpeakButton text="Csúnya" label="" /> - потворний
+- **régi** <SpeakButton text="Régi" label="" /> - старий
+- **piszkos** <SpeakButton text="Piszkos" label="" /> - брудний
+- **nehéz** <SpeakButton text="Nehéz" label="" /> - важкий
+- **unalmas** <SpeakButton text="Unalmas" label="" /> - нудний
+- **kellemetlen** <SpeakButton text="Kellemetlen" label="" /> - неприємний
 
-::info
+::note
 
 **Пари антонімів**:
 
@@ -151,21 +159,21 @@ description: Вчимося описувати речі за допомогою 
 
 ## Прикметники температури та відчуттів
 
-- **meleg** [мелег] - теплий, жаркий
-- **hideg** [хідег] - холодний
-- **forró** [форро] - гарячий
-- **langyos** [лонгьош] - теплуватий
-- **hűvös** [хювош] - прохолодний
+- **meleg** <SpeakButton text="Meleg" label="" /> - теплий, жаркий
+- **hideg** <SpeakButton text="Hideg" label="" /> - холодний
+- **forró** <SpeakButton text="Forró" label="" /> - гарячий
+- **langyos** <SpeakButton text="Langyos" label="" /> - теплуватий
+- **hűvös** <SpeakButton text="Hűvös" label="" /> - прохолодний
 
 ### Смакові відчуття:
 
-- **édes** [едеш] - солодкий
-- **sós** [шош] - солоний
-- **savanyú** [шовонью] - кислий
-- **keserű** [кешерю] - гіркий
-- **csípős** [чіпеш] - гострий (пекучий)
-- **finom** [фіном] - смачний
-- **fincsi** [фінчі] - дуже смачний (розмовне)
+- **édes** <SpeakButton text="Édes" label="" /> - солодкий
+- **sós** <SpeakButton text="Sós" label="" /> - солоний
+- **savanyú** <SpeakButton text="Savanyú" label="" /> - кислий
+- **keserű** <SpeakButton text="Keserű" label="" /> - гіркий
+- **csípős** <SpeakButton text="Csípős" label="" /> - гострий (пекучий)
+- **finom** <SpeakButton text="Finom" label="" /> - смачний
+- **fincsi** <SpeakButton text="Fincsi" label="" /> - смачний (більш сленгове)
 
 ---
 
@@ -209,10 +217,10 @@ description: Вчимося описувати речі за допомогою 
 
 **Іменник + прикметник**
 
-- **A ház nagy.** [о хаз нодь] - Будинок великий.
-- **Az autó piros.** [оз ауто пірош] - Машина червона.
-- **Ez szép.** [ез сеп] - Це гарне.
-- **Az jó.** [оз йо] - Те добре.
+- **A ház nagy.** <SpeakButton text="A ház nagy" label="" /> - Будинок великий.
+- **Az autó piros.** <SpeakButton text="Az autó piros" label="" /> - Машина червона.
+- **Ez szép.** <SpeakButton text="Ez szép" label="" /> - Це гарне.
+- **Az jó.** <SpeakButton text="Az jó" label="" /> - Те добре.
 
 ::note
 
@@ -231,26 +239,26 @@ description: Вчимося описувати речі за допомогою 
 
 ### Описуємо речі:
 
-- **Milyen?** [міен] - Який/яка/яке?
-- **Milyen színű?** [міен сіню] - Якого кольору?
+- **Milyen?** <SpeakButton text="Milyen?" label="" /> - Який/яка/яке?
+- **Milyen színű?** <SpeakButton text="Milyen színű?" label="" /> - Якого кольору?
 
 ### Діалог:
 
-**A:** Milyen az autód?  
-**B:** Piros és nagy.  
-**A:** És milyen a házad?  
-**B:** Kicsi, de szép.
-
-_(Переклад: Яка твоя машина? - Червона та велика. А який твій будинок? - Маленький, але гарний.)_
+- **A:** Milyen az autód? //Яка твоя машина?//
+- **B:** Piros és nagy. //Червона та велика.//
+- **A:** És milyen a házad? //А який твій будинок?//
+- **B:** Kicsi, de szép. //Маленький, але гарний.//
 
 ### Опис людини:
 
-- **magas** - високий
-- **alacsony** - низький
-- **fiatal** - молодий
-- **öreg** - старий
-- **szép** - гарний/гарна
-- **csinos** [чінош] - симпатичний/симпатична
+- **magas** <SpeakButton text="Magas" label="" /> - високий
+- **alacsony** <SpeakButton text="Alacsony" label="" /> - низький
+- **fiatal** <SpeakButton text="Fiatal" label="" /> - молодий
+- **öreg** <SpeakButton text="Öreg" label="" /> - старий
+- **szép** <SpeakButton text="Szép" label="" /> - гарний/гарна
+- **csinos** <SpeakButton text="Csinos" label="" /> - гарний/гарна або симпатичний/симпатична
+
+**Szimpatikus** також використовується для значення симпатичний.
 
 ---
 
@@ -259,14 +267,17 @@ _(Переклад: Яка твоя машина? - Червона та вели
 ### Базова форма:
 
 - **nagy** - великий
+- **kicsi** - малий
 
 ### Вищий ступінь:
 
-- **nagyobb** - більший (додається -bb)
+- **nagyobb** - більший (додається -obb)
+- **kissebb** - менший
 
 ### Найвищий ступінь:
 
-- **legnagyobb** - найбільший (leg- + прикметник + -bb)
+- **legnagyobb** - найбільший (leg- + прикметник + -obb)
+- **legkissebb** - найменший
 
 ### Приклади:
 
@@ -286,33 +297,37 @@ _(Переклад: Яка твоя машина? - Червона та вели
 
 ## Завдання
 
-### Завдання 1: Кольори
+::steps
+
+### Кольори
 
 - Вивчити всі 11 основних кольорів
 - Навчитися називати кольори речей навколо вас
 - Описати 10 предметів за кольором
 - Вивчити конструкції "світлий/темний колір"
 
-### Завдання 2: Прикметники розміру
+### Прикметники розміру
 
 - Вивчити всі пари антонімів розміру
 - Практикувати з реальними предметами
 - Скласти 10 речень з різними прикметниками
 - Порівняти 5 пар предметів
 
-### Завдання 3: Опис предметів
+### Опис предметів
 
 - Вибрати 5 предметів у кімнаті
 - Описати кожен 3-4 прикметниками
 - Практикувати питання "Milyen?"
 - Записати описи та прочитати вголос
 
-### Завдання 4: Діалоги
+### Діалоги
 
 - Скласти діалог про улюблені кольори
 - Скласти діалог-опис кімнати
 - Скласти діалог про предмети (що це, який він)
 - Практикувати вголос
+
+::
 
 ---
 
@@ -324,9 +339,9 @@ _(Переклад: Яка твоя машина? - Червона та вели
 
 Граєте з партнером або самостійно:
 
-**A:** "Látok valamit, ami piros." (Я бачу щось червоне)  
-**B:** "Ez az alma?" (Це яблуко?)  
-**A:** "Igen!" / "Nem!"
+- **A:** "Látok valamit, ami piros." (Я бачу щось червоне)
+- **B:** "Ez az alma?" (Це яблуко?)
+- **A:** "Igen!" / "Nem!"
 
 Чудова гра для практики кольорів та прикметників!
 
@@ -351,19 +366,19 @@ _(Переклад: Яка твоя машина? - Червона та вели
 
 ### Емоції та стани:
 
-- **boldog** [болдог] - щасливий
-- **szomorú** [сомору] - сумний
-- **fáradt** [фарадт] - втомлений
-- **éhes** [ехеш] - голодний
-- **szomjas** [сомйош] - спраглий
+- **boldog** <SpeakButton text="Boldog" label="" /> - щасливий
+- **szomorú** <SpeakButton text="Szomorú" label="" /> - сумний
+- **fáradt** <SpeakButton text="Fáradt" label="" /> - втомлений
+- **éhes** <SpeakButton text="Éhes" label="" /> - голодний
+- **szomjas** <SpeakButton text="Szomjas" label="" /> - спраглий
 
 ### Погода:
 
-- **napos** [нопош] - сонячний
-- **felhős** [фелхеш] - хмарний
-- **esős** [ешеш] - дощовий
-- **havas** [ховош] - сніжний
-- **szeles** [селеш] - вітряний
+- **napos** <SpeakButton text="Napos" label="" /> - сонячний
+- **felhős** <SpeakButton text="Felhős" label="" /> - хмарний
+- **esős** <SpeakButton text="Esős" label="" /> - дощовий
+- **havas** <SpeakButton text="Havas" label="" /> - сніжний
+- **szeles** <SpeakButton text="Szeles" label="" /> - вітряний
 
 ---
 
@@ -373,10 +388,23 @@ _(Переклад: Яка твоя машина? - Червона та вели
 
 **Кольори в угорській культурі**:
 
-- **Piros-fehér-zöld** (червоний-білий-зелений) - кольори угорського прапора
-- **Fehér** (білий) - символ чистоти, часто на весіллях
-- **Fekete** (чорний) - траур, офіційність
-- **Piros** (червоний) - свята, урочистості
+**Piros-fehér-zöld** (червоний-білий-зелений) - кольори угорського прапора
+
+Є вірш написаний в знак револіціїї (15 березня) який називається ["Piros, fehér, zöld, ez a magyar föld!"](https://bwkmi.ulbe.org/2023/03/22/piros-feher-zold-ez-a-magyar-fold/).
+
+<a
+  href="https://hu.wikipedia.org/wiki/Kok%C3%A1rda"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/b/be/Magyar_kok%C3%A1rda.png"
+    alt="Magyar Kokárda"
+    style="display:block; margin:24px auto; max-height:260px; width:auto;"
+  />
+</a>
+
+В цей день люди зазвичай носять [кокарди](https://hu.wikipedia.org/wiki/Kok%C3%A1rda) (такий вид банту) з угорським прапорем.
 
 ::
 
@@ -384,7 +412,7 @@ _(Переклад: Яка твоя машина? - Червона та вели
 
 **На наступний урок**:
 
-Ми вивчимо **особові займенники та дієслово "to be" (lenni)**. Це дуже важливо для побудови речень!
+Ми вивчимо **особові займенники та дієслово "lenni" (бути)**. Це дуже важливо для побудови речень!
 
 ::
 
