@@ -9,19 +9,19 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Основні кольори
 
-| Українською  | Угорською     | Вимова                                        |
-| ------------ | ------------- | --------------------------------------------- |
-| білий        | fehér         | <SpeakButton text="Fehér" label="" />         |
-| чорний       | fekete        | <SpeakButton text="Fekete" label="" />        |
-| червоний     | piros / vörös | <SpeakButton text="Piros / Vörös" label="" /> |
-| синій        | kék           | <SpeakButton text="Kék" label="" />           |
-| жовтий       | sárga         | <SpeakButton text="Sárga" label="" />         |
-| зелений      | zöld          | <SpeakButton text="Zöld" label="" />          |
-| помаранчевий | narancs       | <SpeakButton text="Narancs" label="" />       |
-| фіолетовий   | lila          | <SpeakButton text="Lila" label="" />          |
-| рожевий      | rózsaszín     | <SpeakButton text="Rózsaszín" label="" />     |
-| коричневий   | barna         | <SpeakButton text="Barna" label="" />         |
-| сірий        | szürke        | <SpeakButton text="Szürke" label="" />        |
+| Українською  | Угорською     | Вимова                                  |
+| ------------ | ------------- | --------------------------------------- |
+| білий        | fehér         | <SpeakButton text="Fehér" label="" />   |
+| чорний       | fekete        | <SpeakButton text="Fekete" label="" />  |
+| червоний     | piros / vörös | <SpeakButton text="Piros" label="" />   |
+| синій        | kék           | <SpeakButton text="Kék" label="" />     |
+| жовтий       | sárga         | <SpeakButton text="Sárga" label="" />   |
+| зелений      | zöld          | <SpeakButton text="Zöld" label="" />    |
+| помаранчевий | narancs       | <SpeakButton text="Narancs" label="" /> |
+| фіолетовий   | lila          | <SpeakButton text="" label="N/A" />     |
+| рожевий      | rózsaszín     | <SpeakButton text="" label="N/A" />     |
+| коричневий   | barna         | <SpeakButton text="" label="N/A" />     |
+| сірий        | szürke        | <SpeakButton text="Szürke" label="" />  |
 
 **Szín** - означає колір.
 
@@ -36,7 +36,7 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 Також **narancs** - може означати і фрукт апельсин. Контекст важливий.
 
-Якщо казати колір апельсину то зазвичай кажуть: **narancssárga narancs**. Так як оранжевий є відтінком жовтого.
+Тому для кольору частіше використовують: **narancssárga**. Так як оранжевий є відтінком жовтого.
 
 ::
 
@@ -60,11 +60,11 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Яскраві/бліді кольори:
 
-- **élénk** <SpeakButton text="Élénk" label="" /> = яскравий
+- **élénk** = яскравий
   - élénk piros = яскраво-червоний
   - élénk sárga = яскраво-жовтий
 
-- **halvány** <SpeakButton text="Halvány" label="" /> = блідий
+- **halvány** = блідий
   - halvány rózsaszín = блідо-рожевий
   - halvány kék = блідо-синій
 
@@ -83,18 +83,18 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Прикметники розміру
 
-| Українською | Угорською   | Вимова                                      | Антонім     |
-| ----------- | ----------- | ------------------------------------------- | ----------- |
-| великий     | nagy        | <SpeakButton text="Nagy" label="" />        | kicsi / kis |
-| маленький   | kicsi / kis | <SpeakButton text="Kicsi / Kis" label="" /> | nagy        |
-| довгий      | hosszú      | <SpeakButton text="Hosszú" label="" />      | rövid       |
-| короткий    | rövid       | <SpeakButton text="Rövid" label="" />       | hosszú      |
-| широкий     | széles      | <SpeakButton text="Széles" label="" />      | keskeny     |
-| вузький     | keskeny     | <SpeakButton text="Keskeny" label="" />     | széles      |
-| високий     | magas       | <SpeakButton text="Magas" label="" />       | alacsony    |
-| низький     | alacsony    | <SpeakButton text="Alacsony" label="" />    | magas       |
-| товстий     | vastag      | <SpeakButton text="Vastag" label="" />      | vékony      |
-| тонкий      | vékony      | <SpeakButton text="Vékony" label="" />      | vastag      |
+| Українською | Угорською   | Вимова                                     | Антонім     |
+| ----------- | ----------- | ------------------------------------------ | ----------- |
+| великий     | nagy        | <SpeakButton text="Nagy" label="" />       | kicsi / kis |
+| маленький   | kicsi / kis | <SpeakButton text="Kicsi" label="" />      | nagy        |
+| довгий      | hosszú      | <SpeakButton text="Hosszú" label="" />     | rövid       |
+| короткий    | rövid       | <SpeakButton text="Rövid" label="" />      | hosszú      |
+| широкий     | széles      | <SpeakButton text="Széles" label="" />     | keskeny     |
+| вузький     | keskeny     | <SpeakButton text="Keskeny" label="N/A" /> | széles      |
+| високий     | magas       | <SpeakButton text="Magas" label="" />      | alacsony    |
+| низький     | alacsony    | <SpeakButton text="Alacsony" label="" />   | magas       |
+| товстий     | vastag      | <SpeakButton text="Vastag" label="N/A" />  | vékony      |
+| тонкий      | vékony      | <SpeakButton text="Vékony" label="N/A" />  | vastag      |
 
 ::note
 
@@ -111,12 +111,20 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Прикметники форми
 
-- **kerek** <SpeakButton text="Kerek" label="" /> - круглий
-- **négyzet alakú** <SpeakButton text="Négyzet alakú" label="" /> - квадратний
-- **háromszög alakú** <SpeakButton text="Háromszög alakú" label="" /> - трикутний
-- **ovális** <SpeakButton text="Ovális" label="" /> - овальний
-- **egyenes** <SpeakButton text="Egyenes" label="" /> - прямий
-- **görbe** <SpeakButton text="Görbe" label="" /> - кривий
+- **kerek** - круглий
+- **négyzet alakú** - квадратний
+- **háromszög alakú** - трикутний
+- **ovális** - овальний
+- **egyenes** - прямий
+- **görbe** - кривий
+
+::tip
+
+**Sárga bögre, görbe bögre**:
+
+скоромовка
+
+::
 
 ---
 
@@ -124,24 +132,24 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Позитивні:
 
-- **jó** <SpeakButton text="Jó" label="" /> - хороший, добрий
-- **szép** <SpeakButton text="Szép" label="" /> - гарний, красивий
-- **új** <SpeakButton text="Új" label="" /> - новий
-- **tiszta** <SpeakButton text="Tiszta" label="" /> - чистий
-- **friss** <SpeakButton text="Friss" label="" /> - свіжий
-- **könnyű** <SpeakButton text="Könnyű" label="" /> - легкий (по вазі/складності)
-- **érdekes** <SpeakButton text="Érdekes" label="" /> - цікавий
-- **kellemes** <SpeakButton text="Kellemes" label="" /> - приємний
+- **jó** - хороший, добрий
+- **szép** - гарний, красивий
+- **új** - новий
+- **tiszta** - чистий
+- **friss** - свіжий
+- **könnyű** - легкий (по вазі/складності)
+- **érdekes** - цікавий
+- **kellemes** - приємний
 
 ### Негативні:
 
-- **rossz** <SpeakButton text="Rossz" label="" /> - поганий
-- **csúnya** <SpeakButton text="Csúnya" label="" /> - потворний
-- **régi** <SpeakButton text="Régi" label="" /> - старий
-- **piszkos** <SpeakButton text="Piszkos" label="" /> - брудний
-- **nehéz** <SpeakButton text="Nehéz" label="" /> - важкий
-- **unalmas** <SpeakButton text="Unalmas" label="" /> - нудний
-- **kellemetlen** <SpeakButton text="Kellemetlen" label="" /> - неприємний
+- **rossz** - поганий
+- **csúnya** - потворний
+- **régi** - старий
+- **piszkos** - брудний
+- **nehéz** - важкий
+- **unalmas** - нудний
+- **kellemetlen** - неприємний
 
 ::note
 
@@ -159,21 +167,21 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Прикметники температури та відчуттів
 
-- **meleg** <SpeakButton text="Meleg" label="" /> - теплий, жаркий
-- **hideg** <SpeakButton text="Hideg" label="" /> - холодний
-- **forró** <SpeakButton text="Forró" label="" /> - гарячий
-- **langyos** <SpeakButton text="Langyos" label="" /> - теплуватий
-- **hűvös** <SpeakButton text="Hűvös" label="" /> - прохолодний
+- **meleg** - теплий, жаркий
+- **hideg** - холодний
+- **forró** - гарячий
+- **langyos** - теплуватий
+- **hűvös** - прохолодний
 
 ### Смакові відчуття:
 
-- **édes** <SpeakButton text="Édes" label="" /> - солодкий
-- **sós** <SpeakButton text="Sós" label="" /> - солоний
-- **savanyú** <SpeakButton text="Savanyú" label="" /> - кислий
-- **keserű** <SpeakButton text="Keserű" label="" /> - гіркий
-- **csípős** <SpeakButton text="Csípős" label="" /> - гострий (пекучий)
-- **finom** <SpeakButton text="Finom" label="" /> - смачний
-- **fincsi** <SpeakButton text="Fincsi" label="" /> - смачний (більш сленгове)
+- **édes** - солодкий
+- **sós** - солоний
+- **savanyú** - кислий
+- **keserű** - гіркий
+- **csípős** - гострий (пекучий)
+- **finom** - смачний
+- **fincsi** - смачний (більш сленгове)
 
 ---
 
@@ -217,10 +225,10 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 **Іменник + прикметник**
 
-- **A ház nagy.** <SpeakButton text="A ház nagy" label="" /> - Будинок великий.
-- **Az autó piros.** <SpeakButton text="Az autó piros" label="" /> - Машина червона.
-- **Ez szép.** <SpeakButton text="Ez szép" label="" /> - Це гарне.
-- **Az jó.** <SpeakButton text="Az jó" label="" /> - Те добре.
+- **A ház nagy.** - Будинок великий.
+- **Az autó piros.** - Машина червона.
+- **Ez szép.** - Це гарне.
+- **Az jó.** - Те добре.
 
 ::note
 
@@ -239,8 +247,8 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Описуємо речі:
 
-- **Milyen?** <SpeakButton text="Milyen?" label="" /> - Який/яка/яке?
-- **Milyen színű?** <SpeakButton text="Milyen színű?" label="" /> - Якого кольору?
+- **Milyen?** - Який/яка/яке?
+- **Milyen színű?** - Якого кольору?
 
 ### Діалог:
 
@@ -366,19 +374,19 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Емоції та стани:
 
-- **boldog** <SpeakButton text="Boldog" label="" /> - щасливий
-- **szomorú** <SpeakButton text="Szomorú" label="" /> - сумний
-- **fáradt** <SpeakButton text="Fáradt" label="" /> - втомлений
-- **éhes** <SpeakButton text="Éhes" label="" /> - голодний
-- **szomjas** <SpeakButton text="Szomjas" label="" /> - спраглий
+- **boldog** - щасливий
+- **szomorú** - сумний
+- **fáradt** - втомлений
+- **éhes** - голодний
+- **szomjas** - спраглий
 
 ### Погода:
 
-- **napos** <SpeakButton text="Napos" label="" /> - сонячний
-- **felhős** <SpeakButton text="Felhős" label="" /> - хмарний
-- **esős** <SpeakButton text="Esős" label="" /> - дощовий
-- **havas** <SpeakButton text="Havas" label="" /> - сніжний
-- **szeles** <SpeakButton text="Szeles" label="" /> - вітряний
+- **napos** - сонячний
+- **felhős** - хмарний
+- **esős** - дощовий
+- **havas** - сніжний
+- **szeles** - вітряний
 
 ---
 
