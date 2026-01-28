@@ -99,6 +99,12 @@ const {
         min-height: calc(100vh - 64px);
       }
 
+      /* CRITICAL: prevent grid children from forcing the grid wider */
+      .shell > aside,
+      .shell > main {
+        min-width: 0;
+      }
+
       /* SIDEBARS */
       aside {
         background: var(--panel2);
@@ -249,7 +255,31 @@ const {
         .content table {
           display: block;
           overflow-x: auto;
+          overflow-y: hidden;
           white-space: nowrap;
+          -webkit-overflow-scrolling: touch;
+          position: relative;
+          scrollbar-gutter: stable both-edges;
+        }
+
+        .content table[data-scroll-hint="on"]::after {
+          content: "→";
+          position: sticky;
+          right: 10px;
+          bottom: 10px;
+          float: right;
+
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: rgba(249, 115, 22, 0.14);
+          border: 1px solid rgba(249, 115, 22, 0.25);
+
+          color: var(--muted);
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+          pointer-events: none;
+          backdrop-filter: blur(6px);
         }
       }
 
@@ -404,25 +434,38 @@ const {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
+
+        align-items: stretch;
       }
 
       .pagerCard {
         position: relative;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 8px;
+
         border: 1px solid var(--border);
         border-radius: 18px;
-        min-height: 160px; /* on smaller devices make 200px */
-        padding: 22px 20px;
+
+        min-height: 160px;
+        padding: 58px 20px 22px; /* space for arrow */
+
         background: var(--panel);
         color: var(--muted);
+
         transition:
           transform 0.15s ease,
           background 0.15s ease,
           border-color 0.15s ease,
           color 0.15s ease;
+      }
+
+      @media (max-width: 520px) {
+        .pagerCard {
+          padding-top: 80px;
+          min-height: 180px;
+        }
       }
 
       .pagerCard.prev {
@@ -536,6 +579,30 @@ const {
       .pagerCard.next .pagerDesc {
         margin-left: auto;
       }
+      /* prevent from too long titles and descriptions */
+      /*
+      .pagerTitle {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.25;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .pagerDesc {
+        font-size: 13px;
+        line-height: 1.35;
+        max-width: 42ch;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      */
 
       /* RESPONSIVE */
       @media (max-width: 1040px) {
@@ -596,6 +663,22 @@ const {
         color: inherit;
         text-decoration: none;
         background: none;
+      }
+
+      /* Content safety: never overflow the column */
+      .content,
+      .mdx,
+      .mdx * {
+        min-width: 0;
+      }
+
+      .mdx pre,
+      .mdx code {
+        max-width: 100%;
+      }
+
+      .mdx pre {
+        overflow: auto;
       }
 
       /* REVEAL TRANSLATIONS */
@@ -884,6 +967,27 @@ const {
             }
           }
         });
+      })();
+    </script>
+
+    <script>
+      (() => {
+        const tables = Array.from(document.querySelectorAll(".content table"));
+        for (const t of tables) {
+          const isScrollable = t.scrollWidth > t.clientWidth + 2;
+          if (!isScrollable) continue;
+
+          t.setAttribute("data-scroll-hint", "on");
+
+          const onScroll = () => {
+            if (t.scrollLeft > 8) {
+              t.removeAttribute("data-scroll-hint");
+              t.removeEventListener("scroll", onScroll);
+            }
+          };
+
+          t.addEventListener("scroll", onScroll, { passive: true });
+        }
       })();
     </script>
   </body>
