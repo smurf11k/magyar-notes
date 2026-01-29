@@ -2,14 +2,20 @@
 export interface Props {
   text: string;
   label?: string;
+  onlyLocal?: boolean;
 }
 
-const { text, label = "Listen" } = Astro.props;
+const { text, label = "Listen", onlyLocal = false } = Astro.props;
+
+// unique per component instance
+const btnId = `tts-${Math.random().toString(36).slice(2)}`;
 ---
 
 <button
+  id={btnId}
   class="ttsButton"
   data-text={text}
+  data-only-local={onlyLocal ? "true" : "false"}
   title="Якщо вимова звучить неправильно або не працює, спробуйте встановити угорський голосовий пакет на вашому пристрої."
 >
   <svg
@@ -81,61 +87,268 @@ const { text, label = "Listen" } = Astro.props;
   }
 </style>
 
-<script>
-  import { pronounce } from "../lib/pronounce"; // <-- adjust path if needed
+<script type="module">
+  window.__speakState ??= { currentAudio: null };
+  const state = window.__speakState;
 
-  const buttons = document.querySelectorAll(".ttsButton");
-  let currentAudio: HTMLAudioElement | null = null;
+  if (!window.__speakBound) {
+    window.__speakBound = true;
 
-  function stopAll() {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-    }
-    document
-      .querySelectorAll(".ttsButton.speaking")
-      .forEach((b) => b.classList.remove("speaking"));
-  }
-
-  async function playWiktionaryAudio(word: string) {
-    const data = await pronounce(word);
-
-    if (!data || typeof data.url !== "string") {
-      throw new Error("No audio url found for word: " + word);
+    function stopAll() {
+      const a = state.currentAudio;
+      if (a) {
+        a.pause();
+        a.currentTime = 0;
+        state.currentAudio = null;
+      }
+      document
+        .querySelectorAll(".ttsButton.speaking")
+        .forEach((b) => b.classList.remove("speaking"));
     }
 
-    currentAudio = new Audio(data.url);
-    currentAudio.crossOrigin = "anonymous";
-    await currentAudio.play();
-  }
+    async function exists(url) {
+      try {
+        const res = await fetch(url, { method: "HEAD" });
+        return res.ok;
+      } catch {
+        return false;
+      }
+    }
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", async () => {
-      const text = button.getAttribute("data-text") || "";
-      if (!text) return;
+    function splitText(text) {
+      return text
+        .split("+")
+        .flatMap((p) => p.split(/\s+/))
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
 
-      if (button.classList.contains("speaking")) {
-        stopAll();
-        return;
+    function phraseKey(text) {
+      return text.trim().toLowerCase().replace(/\+/g, "-").replace(/\s+/g, "-");
+    }
+
+    async function playUrl(url) {
+      return new Promise((resolve, reject) => {
+        const a = new Audio(url);
+        a.preload = "auto";
+        state.currentAudio = a;
+
+        const cleanup = () => {
+          a.removeEventListener("ended", onEnd);
+          a.removeEventListener("error", onErr);
+          // important: drop reference so next click always starts fresh
+          if (state.currentAudio === a) state.currentAudio = null;
+        };
+
+        const onEnd = () => {
+          cleanup();
+          resolve();
+        };
+
+        const onErr = (e) => {
+          cleanup();
+          reject(e);
+        };
+
+        a.addEventListener("ended", onEnd, { once: true });
+        a.addEventListener("error", onErr, { once: true });
+
+        a.play().catch(onErr);
+      });
+    }
+
+    // --- WIKI RESOLVE ---
+    const WIKIS = [
+      { name: "huwiktionary", api: "https://hu.wiktionary.org" },
+      { name: "enwiktionary", api: "https://en.wiktionary.org" },
+    ];
+
+    async function mwQuery(apiBase, params) {
+      const url = new URL(`${apiBase}/w/api.php`);
+      for (const [k, v] of Object.entries(params))
+        url.searchParams.set(k, String(v));
+      url.searchParams.set("origin", "*");
+      const res = await fetch(url.toString(), {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) return null;
+      return res.json();
+    }
+
+    function pickBestAudioFromImages(images, word) {
+      if (!Array.isArray(images)) return null;
+      const w = String(word || "").toLowerCase();
+
+      const titles = images
+        .map((x) => x?.title)
+        .filter(Boolean)
+        .map((t) => (t.startsWith("File:") ? t : `File:${t}`))
+        .filter((t) => /\.(ogg|oga|mp3|wav)$/i.test(t));
+
+      if (!titles.length) return null;
+
+      function score(title) {
+        const t = title.toLowerCase();
+        let s = 0;
+        if (/\.(ogg|oga)$/.test(t)) s += 20;
+        else if (/\.mp3$/.test(t)) s += 10;
+
+        if (/(^|[-_ ()])hu([-_ ()]|$)/.test(t)) s += 40;
+        if (/hungarian/.test(t)) s += 30;
+        if (/magyar/.test(t)) s += 20;
+
+        if (/pronun|pronunc|ipa|audio|speech/.test(t)) s += 20;
+        if (w && t.includes(w)) s += 25;
+
+        if (/example|sentence|phrase|dialog|conversation/.test(t)) s -= 40;
+        if (/slow|spelling|letters|alphabet/.test(t)) s -= 20;
+
+        return s;
       }
 
-      stopAll();
-      button.classList.add("speaking");
+      titles.sort((a, b) => score(b) - score(a));
+      return titles[0];
+    }
+
+    async function resolveFileUrl(apiBase, fileTitle) {
+      const data = await mwQuery(apiBase, {
+        action: "query",
+        format: "json",
+        prop: "imageinfo",
+        titles: fileTitle,
+        iiprop: "url",
+      });
+
+      const pages = data?.query?.pages;
+      if (!pages) return null;
+
+      const page = Object.values(pages)[0];
+      const url = page?.imageinfo?.[0]?.url;
+      return typeof url === "string" ? url : null;
+    }
+
+    async function findAudioOnWiki(apiBase, title) {
+      const data = await mwQuery(apiBase, {
+        action: "query",
+        format: "json",
+        prop: "images",
+        titles: title,
+        imlimit: "max",
+      });
+
+      const pages = data?.query?.pages;
+      if (!pages) return null;
+
+      const page = Object.values(pages)[0];
+      const images = page?.images || [];
+
+      const bestFile = pickBestAudioFromImages(images, title);
+      if (!bestFile) return null;
+
+      const localUrl = await resolveFileUrl(apiBase, bestFile);
+      if (localUrl) return localUrl;
+
+      const commonsUrl = await resolveFileUrl(
+        "https://commons.wikimedia.org",
+        bestFile,
+      );
+      if (commonsUrl) return commonsUrl;
+
+      return null;
+    }
+
+    async function pronounceWiki(wordRaw) {
+      const word = (wordRaw || "").trim();
+      if (!word) return null;
+
+      const variants = Array.from(
+        new Set([
+          word,
+          word.toLowerCase(),
+          word.charAt(0).toUpperCase() + word.slice(1),
+        ]),
+      );
+
+      for (const w of WIKIS) {
+        for (const t of variants) {
+          const hit = await findAudioOnWiki(w.api, t);
+          if (hit) return hit;
+        }
+      }
+      return null;
+    }
+    // --- END WIKI ---
+
+    async function resolveOneLocal(wordOrPhrase) {
+      const key = wordOrPhrase.toLowerCase();
+      const exts = ["mp3", "ogg", "wav", "oga"];
+
+      for (const ext of exts) {
+        const url = `/pronounce/${encodeURIComponent(key)}.${ext}`;
+        if (await exists(url)) return url;
+      }
+      return null;
+    }
+
+    async function resolveAudioSequence(text, onlyLocal) {
+      const pKey = phraseKey(text);
+      const phraseUrl = await resolveOneLocal(pKey);
+      if (phraseUrl) return [phraseUrl];
+
+      const parts = splitText(text);
+      const urls = [];
+
+      for (const part of parts) {
+        const localUrl = await resolveOneLocal(part);
+        if (localUrl) {
+          urls.push(localUrl);
+          continue;
+        }
+
+        if (onlyLocal) continue;
+
+        const wikiUrl = await pronounceWiki(part);
+        if (wikiUrl) urls.push(wikiUrl);
+      }
+
+      return urls;
+    }
+
+    document.addEventListener("click", async (e) => {
+      const button = e.target?.closest?.(".ttsButton");
+      if (!button) return;
+
+      if (button.dataset.busy === "1") return;
+      button.dataset.busy = "1";
+
+      const text = button.getAttribute("data-text") || "";
+      const onlyLocal = button.getAttribute("data-only-local") === "true";
 
       try {
-        await playWiktionaryAudio(text);
+        if (!text) return;
 
-        if (currentAudio) {
-          currentAudio.onended = () => button.classList.remove("speaking");
-          currentAudio.onerror = () => button.classList.remove("speaking");
+        if (button.classList.contains("speaking")) {
+          stopAll();
+          return;
         }
-      } catch (e) {
+
+        stopAll();
+        button.classList.add("speaking");
+
+        const urls = await resolveAudioSequence(text, onlyLocal);
+        if (!urls.length) throw new Error("No audio found");
+
+        for (const url of urls) await playUrl(url);
+
         button.classList.remove("speaking");
-        console.error(e);
+      } catch (err) {
+        console.error(err);
+        button.classList.remove("speaking");
+      } finally {
+        button.dataset.busy = "0";
       }
     });
-  });
 
-  window.addEventListener("beforeunload", () => stopAll());
+    window.addEventListener("beforeunload", () => stopAll());
+  }
 </script>

@@ -9,14 +9,14 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Особові займенники
 
-| Особа | Українською   | Угорською | Вимова                              |
-| ----- | ------------- | --------- | ----------------------------------- |
-| 1 од. | я             | én        | <SpeakButton text="Én" label="" />  |
-| 2 од. | ти            | te        | <SpeakButton text="Te" label="" />  |
-| 3 од. | він/вона/воно | ő         | <SpeakButton text="Ő" label="" />   |
-| 1 мн. | ми            | mi        | <SpeakButton text="" label="N/A" /> |
-| 2 мн. | ви            | ti        | <SpeakButton text="" label="N/A" /> |
-| 3 мн. | вони          | ők        | <SpeakButton text="Ők" label="" />  |
+| Особа | Українською   | Угорською | Вимова                                         |
+| ----- | ------------- | --------- | ---------------------------------------------- |
+| 1 од. | я             | én        | <SpeakButton text="Én" label="" />             |
+| 2 од. | ти            | te        | <SpeakButton text="Te" label="" />             |
+| 3 од. | він/вона/воно | ő         | <SpeakButton text="Ő" label="" />              |
+| 1 мн. | ми            | mi        | <SpeakButton text="mi" label="N/A" onlyLocal/> |
+| 2 мн. | ви            | ti        | <SpeakButton text="ti" label="N/A" onlyLocal/> |
+| 3 мн. | вони          | ők        | <SpeakButton text="Ők" label="" />             |
 
 ::info
 
@@ -60,11 +60,11 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 | ----- | ---------------- | ---------------- | ------------------------------------------ |
 | én    | vagyok           | я є              | <SpeakButton text="Vagyok" label="" />     |
 | te    | vagy             | ти є             | <SpeakButton text="Vagy" label="" />       |
-| ő     | van              | він/вона є       | <SpeakButton text="" label="N/A" />        |
+| ő     | van              | він/вона є       | <SpeakButton text="van" label="N/A" />     |
 | mi    | vagyunk          | ми є             | <SpeakButton text="Vagyunk" label="" />    |
 | ti    | vagytok          | ви є             | <SpeakButton text="Vagytok" label="N/A" /> |
 | ők    | vannak           | вони є           | <SpeakButton text="Vannak" label="" />     |
-| ön    | van              | Ви є (формально) | <SpeakButton text="" label="N/A" />        |
+| ön    | van              | Ви є (формально) | <SpeakButton text="van" label="N/A" />     |
 
 ::tip
 
@@ -135,14 +135,14 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 Для заперечення використовується частка **nem** перед дієсловом:
 
-| Особа | Стверджувальна | Заперечна              | Вимова                                         |
-| ----- | -------------- | ---------------------- | ---------------------------------------------- |
-| én    | vagyok         | nem vagyok             | <SpeakButton text="Nem vagyok" label="N/A" />  |
-| te    | vagy           | nem vagy               | <SpeakButton text="Nem vagy" label="N/A" />    |
-| ő     | van            | nincs                  | <SpeakButton text="Nincs" label="" />          |
-| mi    | vagyunk        | nem vagyunk            | <SpeakButton text="Nem vagyunk" label="N/A" /> |
-| ti    | vagytok        | nem vagytok            | <SpeakButton text="Nem vagytok" label="N/A" /> |
-| ők    | vannak         | nincsenek / nem vannak | <SpeakButton text="nincsenek" label="" />      |
+| Особа | Стверджувальна | Заперечна              | Вимова                                                  |
+| ----- | -------------- | ---------------------- | ------------------------------------------------------- |
+| én    | vagyok         | nem vagyok             | <SpeakButton text="nem-vagyok" label="N/A" onlyLocal/>  |
+| te    | vagy           | nem vagy               | <SpeakButton text="nem-vagy" label="N/A" onlyLocal/>    |
+| ő     | van            | nincs                  | <SpeakButton text="Nincs" label="" />                   |
+| mi    | vagyunk        | nem vagyunk            | <SpeakButton text="nem-vagyunk" label="N/A" onlyLocal/> |
+| ti    | vagytok        | nem vagytok            | <SpeakButton text="nem-vagytok" label="N/A" onlyLocal/> |
+| ők    | vannak         | nincsenek / nem vannak | <SpeakButton text="nincsenek" label="" />               |
 
 ::warning
 
@@ -257,7 +257,7 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 ### Національності:
 
 - **magyar** <SpeakButton text="magyar" label="" /> - угорець/угорка
-- **ukrán** <SpeakButton text="ukrán" label="N/A" /> - українець/українка
+- **ukrán** <SpeakButton text="ukrán" label="N/A" onlyLocal/> - українець/українка
 - **angol** <SpeakButton text="angol" label="" /> - англієць/англійка
 - **német** <SpeakButton text="német" label="" /> - німець/німка
 - **orosz** <SpeakButton text="orosz" label="" /> - росіянин/росіянка
