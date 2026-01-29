@@ -82,6 +82,8 @@ const { text, label = "Listen" } = Astro.props;
 </style>
 
 <script>
+  import { pronounce } from "../lib/pronounce"; // <-- adjust path if needed
+
   const buttons = document.querySelectorAll(".ttsButton");
   let currentAudio: HTMLAudioElement | null = null;
 
@@ -97,32 +99,20 @@ const { text, label = "Listen" } = Astro.props;
   }
 
   async function playWiktionaryAudio(word: string) {
-    const res = await fetch(
-      `/.netlify/functions/pronounce?word=${encodeURIComponent(word)}`,
-    );
-
-    // For testing: do NOT fallback.
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      throw new Error(`Netlify function failed: ${res.status} ${body}`);
-    }
-
-    const data = await res.json();
+    const data = await pronounce(word);
 
     if (!data || typeof data.url !== "string") {
-      throw new Error("Function returned JSON without { url }");
+      throw new Error("No audio url found for word: " + word);
     }
 
     currentAudio = new Audio(data.url);
     currentAudio.crossOrigin = "anonymous";
-
     await currentAudio.play();
   }
 
   buttons.forEach((button) => {
     button.addEventListener("click", async () => {
       const text = button.getAttribute("data-text") || "";
-
       if (!text) return;
 
       if (button.classList.contains("speaking")) {
