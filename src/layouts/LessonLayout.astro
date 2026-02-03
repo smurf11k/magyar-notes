@@ -45,6 +45,13 @@ const {
         --right-w: 300px;
 
         --font-reading: "IBM Plex Sans", system-ui, -apple-system;
+
+        --header-h: 64px;
+        --tocbar-h: 52px;
+
+        --surface-blur: blur(12px);
+        --surface-dark: rgba(11, 11, 15, 0.8);
+        --surface-light: rgba(255, 255, 255, 0.8);
       }
 
       /* Light theme */
@@ -73,7 +80,7 @@ const {
       }
 
       html {
-        scroll-padding-top: 80px; /* Header height (64px) + buffer (16px) */
+        scroll-padding-top: 110px; /* Header height (64px) + buffer (16px) */
         scroll-behavior: smooth;
       }
 
@@ -84,6 +91,18 @@ const {
         color: #f3f3f3;
         font-family: var(--font-reading);
       }
+
+      /* lock background scroll while overlay open */
+      html.noScroll {
+        overflow: hidden !important;
+      }
+
+      /* use fixed-body lock to preserve scroll position 
+      body.noScroll {
+        position: fixed;
+        overflow: hidden !important;
+        width: 100%;
+      }*/
 
       a {
         color: inherit;
@@ -252,22 +271,26 @@ const {
 
       /* Responsive tables - scroll on mobile */
       @media (max-width: 768px) {
-        .content table {
-          display: block;
+        .content .tableWrap {
+          position: relative;
           overflow-x: auto;
           overflow-y: hidden;
-          white-space: nowrap;
           -webkit-overflow-scrolling: touch;
-          position: relative;
-          scrollbar-gutter: stable both-edges;
+          padding-bottom: 28px;
         }
 
-        .content table[data-scroll-hint="on"]::after {
+        .content .tableWrap table {
+          width: max-content;
+          min-width: 100%;
+          /*white-space: nowrap;*/
+        }
+
+        .content .tableWrap[data-scroll-hint="on"]::after {
           content: "→";
-          position: sticky;
+          position: absolute;
           right: 10px;
           bottom: 10px;
-          float: right;
+          z-index: 5;
 
           padding: 6px 10px;
           border-radius: 999px;
@@ -721,6 +744,177 @@ const {
         background: rgba(249, 115, 22, 0.08);
         border-color: rgba(249, 115, 22, 0.2);
       }
+
+      /* ===== overlays (GLOBAL) ===== */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        display: none;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      [data-theme="light"] .overlay {
+        background: rgba(0, 0, 0, 0.35);
+      }
+
+      .overlay.open {
+        display: block;
+      }
+
+      .overlayPanel {
+        position: absolute;
+        inset: 0;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .overlayTop {
+        height: 64px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .overlayTitle {
+        font-weight: 800;
+      }
+
+      .closeBtn {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 8px;
+        color: var(--muted);
+      }
+
+      .overlayBody {
+        padding: 14px 14px 24px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      @media (max-width: 1040px) {
+        aside.left,
+        aside.right {
+          display: none;
+        }
+      }
+
+      /* Hide mobile TOC UI by default (desktop) */
+      .mobileTocBar,
+      .tocDropBackdrop {
+        display: none;
+      }
+
+      /* Show only on mobile/tablet widths */
+      @media (max-width: 1040px) {
+        .mobileTocBar {
+          display: block;
+        }
+        .tocDropBackdrop {
+          /* keep your existing .open logic */
+          display: none;
+        }
+        .tocDropBackdrop.open {
+          display: block;
+        }
+      }
+
+      @media (max-width: 1040px) {
+        /* bar under header */
+        .mobileTocBar {
+          position: sticky;
+          top: var(--header-h);
+          z-index: 1001;
+          border-bottom: 2px solid var(--border);
+          background: var(--surface-dark);
+          backdrop-filter: var(--surface-blur);
+          -webkit-backdrop-filter: var(--surface-blur);
+        }
+        [data-theme="light"] .mobileTocBar {
+          background: var(--surface-light);
+        }
+
+        .tocBtn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          padding: 12px 16px;
+          background: none;
+          border: none;
+          color: inherit;
+          font-weight: 800;
+        }
+
+        .tocBtn .chev {
+          width: 18px;
+          height: 18px;
+          stroke-width: 2.5;
+          color: var(--muted);
+          transition: transform 0.18s ease;
+        }
+        .tocBtn[aria-expanded="true"] .chev {
+          transform: rotate(180deg);
+        }
+
+        /* fullscreen under header */
+        .tocDropBackdrop {
+          position: fixed;
+          left: 0;
+          right: 0;
+          top: var(--header-h); /* header stays visible */
+          bottom: 0;
+          z-index: 1000;
+          display: none;
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+        }
+        [data-theme="light"] .tocDropBackdrop {
+          background: rgba(0, 0, 0, 0.25);
+        }
+
+        .tocDropBackdrop.open {
+          display: block;
+        }
+
+        .tocDrop {
+          position: absolute;
+          inset: 0;
+          background: var(--bg);
+          display: flex;
+          flex-direction: column;
+
+          transform-origin: top;
+          transform: translateY(-16px);
+          opacity: 0;
+
+          transition:
+            transform 220ms ease,
+            opacity 220ms ease;
+        }
+
+        .tocDropBackdrop.open .tocDrop {
+          transform: translateY(0);
+          opacity: 1;
+        }
+
+        .tocDropBody {
+          flex: 1;
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+          padding: 12px 14px 24px;
+          padding-top: calc(var(--tocbar-h) + 12px);
+        }
+      }
     </style>
   </head>
 
@@ -736,6 +930,53 @@ const {
 
   <body>
     <Header />
+    <!-- Mobile TOC trigger under header -->
+    <div class="mobileTocBar">
+      <button
+        class="tocBtn"
+        id="pageTocBtn"
+        type="button"
+        aria-expanded="false"
+      >
+        <span>On this page</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Fullscreen dropdown under header -->
+    <div class="tocDropBackdrop" id="pageTocBackdrop" aria-hidden="true">
+      <div
+        class="tocDrop"
+        id="pageTocDrop"
+        role="dialog"
+        aria-modal="true"
+        aria-label="On this page"
+      >
+        <div class="tocDropBody">
+          <div class="toc" id="mobileToc">
+            {
+              toc.length === 0 ? (
+                <div class="muted">No headings found.</div>
+              ) : (
+                toc
+                  .filter((h) => h.depth >= 2 && h.depth < 5)
+                  .map((h) => (
+                    <a
+                      class={`d${h.depth}`}
+                      href={`#${h.slug}`}
+                      data-toc={`#${h.slug}`}
+                    >
+                      {h.text}
+                    </a>
+                  ))
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="shell">
       <!-- LEFT SIDEBAR -->
@@ -836,159 +1077,265 @@ const {
     <!-- Auto-highlight active TOC section -->
     <script>
       (() => {
-        const toc = document.getElementById("toc");
-        if (!toc) return;
+        const tocDesktop = document.getElementById("toc");
+        const tocMobile = document.getElementById("mobileToc");
 
-        const links = Array.from(toc.querySelectorAll("a"));
-        if (links.length === 0) return;
+        const containers = [tocDesktop, tocMobile].filter(
+          (x): x is HTMLElement => x instanceof HTMLElement,
+        );
+        if (containers.length === 0) return;
 
-        const byId = new Map();
-        for (const a of links) {
+        const allLinks = containers.flatMap((c) =>
+          Array.from(c.querySelectorAll<HTMLAnchorElement>("a[href^='#']")),
+        );
+        if (allLinks.length === 0) return;
+
+        // id -> links (desktop + mobile)
+        const byId = new Map<string, HTMLAnchorElement[]>();
+        for (const a of allLinks) {
           const hash = a.getAttribute("href") || "";
           const id = hash.startsWith("#") ? hash.slice(1) : "";
-          if (id) byId.set(id, a);
+          if (!id) continue;
+
+          const arr = byId.get(id) || [];
+          arr.push(a);
+          byId.set(id, arr);
         }
 
         const headings = Array.from(
-          document.querySelectorAll("h2[id], h3[id], h4[id]"),
+          document.querySelectorAll<HTMLElement>("h2[id], h3[id], h4[id]"),
         ).filter((h) => byId.has(h.id));
 
         if (headings.length === 0) return;
 
-        let isScrollingFromClick = false;
-        let scrollTimeout: number;
         let currentActiveId = "";
+        let isScrollingFromClick = false;
+        let scrollTimeout: number | undefined;
 
         const setActive = (id: string) => {
           if (currentActiveId === id) return;
-
           currentActiveId = id;
-          links.forEach((a) => a.classList.remove("active"));
-          const el = byId.get(id);
-          if (el) {
-            el.classList.add("active");
-          }
+
+          allLinks.forEach((a) => a.classList.remove("active"));
+          const match = byId.get(id);
+          if (match) match.forEach((a) => a.classList.add("active"));
         };
 
-        const initial = location.hash ? location.hash.slice(1) : "";
-        if (initial && byId.has(initial)) {
-          setActive(initial);
-        } else if (headings[0]) {
-          setActive(headings[0].id);
-        }
-
-        let lastUpdate = 0;
-        const throttleDelay = 100;
-
-        const updateActiveHeading = () => {
-          if (isScrollingFromClick) return;
-
-          const now = Date.now();
-          if (now - lastUpdate < throttleDelay) return;
-          lastUpdate = now;
-
+        const getActiveIdByScroll = () => {
           const scrollTop = window.scrollY;
           const triggerPoint = scrollTop + 150;
 
-          const headingPositions = headings.map((heading) => ({
-            id: heading.id,
-            top: heading.getBoundingClientRect().top + scrollTop,
-            element: heading,
-          }));
-
-          let activeHeading = headingPositions[0];
-
-          for (const heading of headingPositions) {
-            if (heading.top <= triggerPoint) {
-              activeHeading = heading;
-            } else {
-              break;
-            }
+          let active = headings[0];
+          for (const h of headings) {
+            const top = h.getBoundingClientRect().top + scrollTop;
+            if (top <= triggerPoint) active = h;
+            else break;
           }
-
-          if (activeHeading && activeHeading.id) {
-            setActive(activeHeading.id);
-          }
+          return active?.id || headings[0].id;
         };
 
+        const updateActiveHeading = () => {
+          if (isScrollingFromClick) return;
+          setActive(getActiveIdByScroll());
+        };
+
+        // init
+        const initial = location.hash ? location.hash.slice(1) : "";
+        if (initial && byId.has(initial)) setActive(initial);
+        else setActive(getActiveIdByScroll());
+
+        // scroll listener (rAF)
         let rafId: number | null = null;
-        const scheduleUpdate = () => {
-          if (rafId === null) {
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (rafId !== null) return;
             rafId = requestAnimationFrame(() => {
               updateActiveHeading();
               rafId = null;
             });
-          }
-        };
+          },
+          { passive: true },
+        );
 
-        window.addEventListener("scroll", scheduleUpdate, { passive: true });
-        updateActiveHeading();
-
-        toc.addEventListener("click", (e) => {
+        const onTocClick = (e: Event) => {
           const t = e.target;
           if (!(t instanceof Element)) return;
-          const a = t.closest("a");
+
+          const a = t.closest("a[href^='#']");
           if (!(a instanceof HTMLAnchorElement)) return;
+
           const hash = a.getAttribute("href") || "";
+          const id = hash.slice(1);
+          const targetEl = document.getElementById(id);
+          if (!targetEl) return;
 
-          if (hash.startsWith("#")) {
-            e.preventDefault();
-            const targetId = hash.slice(1);
-            const targetEl = document.getElementById(targetId);
+          e.preventDefault();
 
-            if (targetEl) {
-              isScrollingFromClick = true;
-              clearTimeout(scrollTimeout);
+          // if click came from mobile toc, close the dropdown
+          const backdrop = document.getElementById("pageTocBackdrop");
+          if (backdrop?.classList.contains("open")) {
+            backdrop.classList.remove("open");
+            document.documentElement.classList.remove("noScroll");
+            document.body.classList.remove("noScroll");
 
-              setActive(targetId);
-              targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-              history.pushState(null, "", hash);
-
-              scrollTimeout = window.setTimeout(() => {
-                isScrollingFromClick = false;
-                updateActiveHeading();
-              }, 1000);
-            }
+            const btn = document.getElementById("pageTocBtn");
+            btn?.setAttribute("aria-expanded", "false");
+            backdrop.setAttribute("aria-hidden", "true");
           }
-        });
 
+          isScrollingFromClick = true;
+          if (scrollTimeout) window.clearTimeout(scrollTimeout);
+
+          setActive(id);
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          history.pushState(null, "", hash);
+
+          scrollTimeout = window.setTimeout(() => {
+            isScrollingFromClick = false;
+            updateActiveHeading();
+          }, 700);
+        };
+
+        // handle clicks in BOTH TOCs
+        containers.forEach((c) => c.addEventListener("click", onTocClick));
+
+        // keep active if user lands by hash change
         window.addEventListener("hashchange", () => {
-          const hash = location.hash.slice(1);
-          if (hash && byId.has(hash)) {
-            setActive(hash);
-            const targetEl = document.getElementById(hash);
-            if (targetEl) {
-              isScrollingFromClick = true;
-              targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-              scrollTimeout = window.setTimeout(() => {
-                isScrollingFromClick = false;
-                updateActiveHeading();
-              }, 1000);
-            }
-          }
+          const id = location.hash.slice(1);
+          if (!id || !byId.has(id)) return;
+          setActive(id);
         });
       })();
     </script>
 
     <script>
       (() => {
-        const tables = Array.from(document.querySelectorAll(".content table"));
+        const tables = Array.from(
+          document.querySelectorAll<HTMLTableElement>(".content table"),
+        );
+
         for (const t of tables) {
-          const isScrollable = t.scrollWidth > t.clientWidth + 2;
+          // wrap (strict-safe)
+          if (!t.parentElement) continue;
+          if (!t.parentElement.classList.contains("tableWrap")) {
+            const wrap = document.createElement("div");
+            wrap.className = "tableWrap";
+
+            const parent = t.parentNode;
+            if (!parent) continue; // strict TS + runtime safety
+
+            parent.insertBefore(wrap, t);
+            wrap.appendChild(t);
+          }
+
+          const wrap = t.parentElement;
+          if (!(wrap instanceof HTMLDivElement)) continue;
+
+          // decide if scroll hint is needed (compare wrapper width vs table width)
+          const isScrollable = t.scrollWidth > wrap.clientWidth + 2;
           if (!isScrollable) continue;
 
-          t.setAttribute("data-scroll-hint", "on");
+          wrap.setAttribute("data-scroll-hint", "on");
 
           const onScroll = () => {
-            if (t.scrollLeft > 8) {
-              t.removeAttribute("data-scroll-hint");
-              t.removeEventListener("scroll", onScroll);
+            if (wrap.scrollLeft > 8) {
+              wrap.removeAttribute("data-scroll-hint");
+              wrap.removeEventListener("scroll", onScroll);
             }
           };
 
-          t.addEventListener("scroll", onScroll, { passive: true });
+          wrap.addEventListener("scroll", onScroll, { passive: true });
         }
       })();
+    </script>
+
+    <script>
+      (() => {
+        const body = document.getElementById("lessonsOverlayBody");
+        const source = document.querySelector(".left .asideSticky");
+
+        if (!(body instanceof HTMLElement) || !(source instanceof HTMLElement))
+          return;
+
+        // clone the list (keeps your styles)
+        body.innerHTML = "";
+        const clone = source.cloneNode(true);
+        body.appendChild(clone);
+
+        // close overlay when a lesson link is clicked
+        const overlay = document.getElementById("lessonsOverlay");
+
+        body.addEventListener("click", (e: MouseEvent) => {
+          const t = e.target;
+          if (!(t instanceof Element)) return;
+
+          const a = t.closest("a[href]");
+          if (!(a instanceof HTMLAnchorElement)) return;
+
+          overlay?.classList.remove("open");
+          overlay?.setAttribute("aria-hidden", "true");
+          document.documentElement.classList.remove("noScroll");
+          document.body.classList.remove("noScroll");
+        });
+      })();
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("pageTocBtn");
+        const backdrop = document.getElementById("pageTocBackdrop");
+
+        const lockScroll = (on: boolean): void => {
+          document.documentElement.classList.toggle("noScroll", on);
+          document.body.classList.toggle("noScroll", on);
+
+          btn?.setAttribute("aria-expanded", on ? "true" : "false");
+          backdrop?.setAttribute("aria-hidden", on ? "false" : "true");
+        };
+
+        const open = () => {
+          backdrop?.classList.add("open");
+          lockScroll(true);
+        };
+
+        const close = () => {
+          backdrop?.classList.remove("open");
+          lockScroll(false);
+        };
+
+        btn?.addEventListener("click", () => {
+          if (!backdrop) return;
+          backdrop.classList.contains("open") ? close() : open();
+        });
+
+        // tap outside sheet closes
+        backdrop?.addEventListener("click", (e: MouseEvent) => {
+          if (e.target === backdrop) close();
+        });
+
+        document.addEventListener("keydown", (e: KeyboardEvent) => {
+          if (e.key === "Escape") close();
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.matchMedia("(min-width: 1041px)").matches) close();
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const setHeaderH = () => {
+          const h = document.getElementById("siteHeader");
+          if (!h) return;
+          const px = Math.ceil(h.getBoundingClientRect().height);
+          document.documentElement.style.setProperty("--header-h", px + "px");
+        };
+
+        setHeaderH();
+        window.addEventListener("resize", setHeaderH, { passive: true });
+      });
     </script>
   </body>
 </html>
