@@ -1,9 +1,15 @@
 ---
 export interface Props {
   title?: string;
+  showExpand?: boolean;
+  showMenu?: boolean;
 }
 
-const { title = "Magyar Notes" } = Astro.props;
+const {
+  title = "Magyar Notes",
+  showExpand = false,
+  showMenu = true,
+} = Astro.props;
 ---
 
 <header class="header" id="siteHeader">
@@ -11,6 +17,43 @@ const { title = "Magyar Notes" } = Astro.props;
     <a href="/">{title}</a>
   </div>
   <nav class="nav">
+    {
+      showExpand && (
+        <button
+          class="expandBtn"
+          id="expandBtn"
+          type="button"
+          aria-label="Toggle full-width view"
+          title="Toggle full-width view"
+        >
+          <svg
+            class="icon icon-expand"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M15 3h6v6" />
+            <path d="M9 21H3v-6" />
+            <path d="M21 3l-7 7" />
+            <path d="M3 21l7-7" />
+          </svg>
+          <svg
+            class="icon icon-collapse"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M4 14h6v6" />
+            <path d="M20 10h-6V4" />
+            <path d="M14 10l7-7" />
+            <path d="M3 21l7-7" />
+          </svg>
+        </button>
+      )
+    }
+
     <a
       href="https://github.com/smurf11k/magyar-notes"
       target="_blank"
@@ -29,6 +72,7 @@ const { title = "Magyar Notes" } = Astro.props;
         ></path>
       </svg>
     </a>
+
     <button class="themeToggle" id="themeToggle" aria-label="Toggle theme">
       <svg
         class="icon sunIcon"
@@ -58,39 +102,44 @@ const { title = "Magyar Notes" } = Astro.props;
       </svg>
     </button>
 
-    <button class="menuBtn" id="lessonsMenuBtn" aria-label="Open lessons menu">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M3 6h18M3 12h18M3 18h18"></path>
-      </svg>
-    </button>
+    {
+      showMenu && (
+        <button
+          class="menuBtn"
+          id="lessonsMenuBtn"
+          aria-label="Open lessons menu"
+        >
+          <svg
+            class="icon menuIcon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+          <svg
+            class="icon closeIcon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      )
+    }
   </nav>
 </header>
-<div class="overlay" id="lessonsOverlay" aria-hidden="true">
-  <div
-    class="overlayPanel"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Lessons"
-  >
-    <div class="overlayTop">
-      <div class="overlayTitle">Lessons</div>
-      <button class="closeBtn" data-close-overlay aria-label="Close">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M18 6L6 18M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
 
-    <!-- content is injected from LessonLayout (TreeView) -->
-    <div class="overlayBody" id="lessonsOverlayBody"></div>
-  </div>
+<!-- Lessons panel (below header, not an overlay) -->
+<div class="lessonsPanel" id="lessonsPanel" aria-hidden="true">
+  <div class="lessonsPanelBody" id="lessonsPanelBody"></div>
 </div>
 
 <style>
   .header {
     padding: 18px 22px;
-    border-bottom: 2px solid var(--border);
-    /*border-bottom: none;*/
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -100,17 +149,17 @@ const { title = "Magyar Notes" } = Astro.props;
     position: sticky;
     top: 0;
     z-index: 10;
+    height: var(--header-h);
+    box-sizing: border-box;
     transition:
       background 0.3s ease,
       backdrop-filter 0.3s ease;
   }
 
-  /* Light theme header */
   :global([data-theme="light"]) .header {
     background: var(--surface-light);
   }
 
-  /* Scrolled state - more blur and transparency */
   .header.scrolled {
     background: var(--surface-dark);
     backdrop-filter: blur(20px);
@@ -123,6 +172,11 @@ const { title = "Magyar Notes" } = Astro.props;
 
   .brand {
     font-weight: 800;
+    font-family:
+      Manrope,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont;
     color: #f3f3f3;
   }
 
@@ -192,7 +246,6 @@ const { title = "Magyar Notes" } = Astro.props;
     display: block;
   }
 
-  /* Light theme */
   :global([data-theme="light"]) .sunIcon {
     display: block;
   }
@@ -201,13 +254,27 @@ const { title = "Magyar Notes" } = Astro.props;
     display: none;
   }
 
+  /* MENU BUTTON - icon toggling */
   .menuBtn {
     display: none;
     background: none;
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: none;
+    border-radius: 0;
     padding: 8px;
     color: var(--muted);
+    cursor: pointer;
+  }
+
+  .menuBtn .closeIcon {
+    display: none;
+  }
+
+  .menuBtn.active .menuIcon {
+    display: none;
+  }
+
+  .menuBtn.active .closeIcon {
+    display: block;
   }
 
   @media (max-width: 1040px) {
@@ -218,64 +285,73 @@ const { title = "Magyar Notes" } = Astro.props;
     }
   }
 
-  /* full-screen overlay */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
+  /* EXPAND BUTTON */
+  .expandBtn {
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition:
+      color 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .expandBtn:hover {
+    color: var(--accent);
+    background: none;
+    border-color: transparent;
+    transform: translateY(-1px);
+  }
+
+  .expandBtn .icon-collapse {
     display: none;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
   }
 
-  :global([data-theme="light"]) .overlay {
-    background: rgba(0, 0, 0, 0.35);
+  :global(html.expanded) .expandBtn .icon-expand {
+    display: none;
   }
 
-  .overlay.open {
+  :global(html.expanded) .expandBtn .icon-collapse {
     display: block;
   }
 
-  .overlayPanel {
-    position: absolute;
-    inset: 0;
+  @media (max-width: 1040px) {
+    .expandBtn {
+      display: none;
+    }
+  }
+
+  /* LESSONS PANEL - slides below header */
+  .lessonsPanel {
+    display: none;
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
     background: var(--bg);
-    border-left: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
   }
 
-  .overlayTop {
-    height: 64px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
+  .lessonsPanel.open {
+    display: block;
   }
 
-  .overlayTitle {
-    font-weight: 800;
-  }
-
-  .closeBtn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px;
-    color: var(--muted);
-  }
-
-  .overlayBody {
-    padding: 14px 14px 24px;
+  .lessonsPanelBody {
+    height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 14px 14px 24px;
   }
 
-  /* only mobile uses overlay; desktop keeps your existing layout */
   @media (min-width: 1041px) {
-    .overlay {
+    .lessonsPanel {
       display: none !important;
     }
   }
@@ -285,7 +361,6 @@ const { title = "Magyar Notes" } = Astro.props;
   // Theme toggle functionality
   const toggle = document.getElementById("themeToggle");
 
-  // Check for saved theme preference or default to 'dark'
   const currentTheme = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", currentTheme);
 
@@ -321,7 +396,7 @@ const { title = "Magyar Notes" } = Astro.props;
 <script>
   (() => {
     const btn = document.getElementById("lessonsMenuBtn");
-    const overlay = document.getElementById("lessonsOverlay");
+    const panel = document.getElementById("lessonsPanel");
 
     const lockScroll = (on: boolean) => {
       document.documentElement.classList.toggle("noScroll", on);
@@ -329,35 +404,32 @@ const { title = "Magyar Notes" } = Astro.props;
     };
 
     const open = () => {
-      if (!overlay) return;
-      overlay.classList.add("open");
-      overlay.setAttribute("aria-hidden", "false");
+      if (!panel || !btn) return;
+      panel.classList.add("open");
+      panel.setAttribute("aria-hidden", "false");
+      btn.classList.add("active");
       lockScroll(true);
     };
 
     const close = () => {
-      if (!overlay) return;
-      overlay.classList.remove("open");
-      overlay.setAttribute("aria-hidden", "true");
+      if (!panel || !btn) return;
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+      btn.classList.remove("active");
       lockScroll(false);
     };
 
-    btn?.addEventListener("click", open);
+    const toggle = () => {
+      if (panel?.classList.contains("open")) close();
+      else open();
+    };
 
-    overlay?.addEventListener("click", (e: MouseEvent) => {
-      // click outside panel closes
-      if (e.target === overlay) close();
-    });
-
-    overlay?.querySelectorAll("[data-close-overlay]").forEach((x) => {
-      x.addEventListener("click", close);
-    });
+    btn?.addEventListener("click", toggle);
 
     document.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape" && panel?.classList.contains("open")) close();
     });
 
-    // close if you rotate / resize into desktop
     window.addEventListener("resize", () => {
       if (window.matchMedia("(min-width: 1041px)").matches) close();
     });

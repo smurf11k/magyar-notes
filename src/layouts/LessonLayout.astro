@@ -32,6 +32,13 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
     <style is:global>
       :root {
         --border: rgba(255, 255, 255, 0.12);
@@ -96,13 +103,6 @@ const {
       html.noScroll {
         overflow: hidden !important;
       }
-
-      /* use fixed-body lock to preserve scroll position 
-      body.noScroll {
-        position: fixed;
-        overflow: hidden !important;
-        width: 100%;
-      }*/
 
       a {
         color: inherit;
@@ -644,6 +644,48 @@ const {
         }
       }
 
+      /* EXPAND MODE - full width content, hide sidebars */
+      html.expanded .shell {
+        grid-template-columns: 0px minmax(0, 1fr) 0px !important;
+      }
+
+      html.expanded aside.left,
+      html.expanded aside.right {
+        opacity: 0;
+        visibility: hidden;
+        overflow: hidden;
+        pointer-events: none;
+        width: 0;
+        padding: 0;
+        border: none;
+      }
+
+      html.expanded aside.left .asideSticky,
+      html.expanded aside.right .asideSticky {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      html.expanded main {
+        max-width: 100%;
+        width: 100%;
+        padding: 18px 48px 80px;
+      }
+
+      /* Smooth transitions for expand/collapse */
+      .shell {
+        transition: grid-template-columns 0.3s ease;
+      }
+
+      aside.left,
+      aside.right {
+        transition:
+          opacity 0.25s ease,
+          visibility 0.25s ease,
+          width 0.3s ease,
+          padding 0.3s ease;
+      }
+
       /* MDX links ONLY (won't touch pager, tree, toc, etc.) */
       .mdx a[href] {
         color: inherit;
@@ -816,27 +858,16 @@ const {
       @media (max-width: 1040px) {
         .mobileTocBar {
           display: block;
-        }
-        .tocDropBackdrop {
-          /* keep your existing .open logic */
-          display: none;
-        }
-        .tocDropBackdrop.open {
-          display: block;
-        }
-      }
-
-      @media (max-width: 1040px) {
-        /* bar under header */
-        .mobileTocBar {
           position: sticky;
           top: var(--header-h);
-          z-index: 1001;
-          border-bottom: 2px solid var(--border);
+          z-index: 9;
+          border-bottom: 1px solid var(--border);
           background: var(--surface-dark);
           backdrop-filter: var(--surface-blur);
           -webkit-backdrop-filter: var(--surface-blur);
+          margin-top: 0;
         }
+
         [data-theme="light"] .mobileTocBar {
           background: var(--surface-light);
         }
@@ -852,6 +883,8 @@ const {
           border: none;
           color: inherit;
           font-weight: 800;
+          font-size: 14px;
+          cursor: pointer;
         }
 
         .tocBtn .chev {
@@ -861,25 +894,20 @@ const {
           color: var(--muted);
           transition: transform 0.18s ease;
         }
+
         .tocBtn[aria-expanded="true"] .chev {
           transform: rotate(180deg);
         }
 
-        /* fullscreen under header */
         .tocDropBackdrop {
           position: fixed;
           left: 0;
           right: 0;
-          top: var(--header-h); /* header stays visible */
+          top: calc(var(--header-h) + var(--tocbar-h, 46px) - 10px);
           bottom: 0;
-          z-index: 1000;
+          z-index: 8;
           display: none;
-          background: rgba(0, 0, 0, 0.45);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
-        }
-        [data-theme="light"] .tocDropBackdrop {
-          background: rgba(0, 0, 0, 0.25);
+          background: transparent;
         }
 
         .tocDropBackdrop.open {
@@ -888,32 +916,38 @@ const {
 
         .tocDrop {
           position: absolute;
-          inset: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
           background: var(--bg);
           display: flex;
           flex-direction: column;
-
-          transform-origin: top;
-          transform: translateY(-16px);
-          opacity: 0;
-
-          transition:
-            transform 220ms ease,
-            opacity 220ms ease;
-        }
-
-        .tocDropBackdrop.open .tocDrop {
-          transform: translateY(0);
-          opacity: 1;
         }
 
         .tocDropBody {
           flex: 1;
           overflow: auto;
           -webkit-overflow-scrolling: touch;
-          padding: 12px 14px 24px;
-          padding-top: calc(var(--tocbar-h) + 12px);
+          padding: 14px 16px 24px;
         }
+      }
+
+      /* Remove tap highlight on mobile */
+      a,
+      button,
+      .tocBtn,
+      .toc a,
+      .node,
+      .pagerCard,
+      .translation,
+      .menuBtn,
+      .expandBtn,
+      .themeToggle,
+      .navLink,
+      .closeBtn,
+      .tocCloseBtn {
+        -webkit-tap-highlight-color: transparent;
       }
     </style>
   </head>
@@ -929,15 +963,11 @@ const {
   </script>
 
   <body>
-    <Header />
-    <!-- Mobile TOC trigger under header -->
+    <Header showExpand={true} />
+
+    <!-- Mobile "On this page" bar -->
     <div class="mobileTocBar">
-      <button
-        class="tocBtn"
-        id="pageTocBtn"
-        type="button"
-        aria-expanded="false"
-      >
+      <button class="tocBtn" id="tocToggleBtn" aria-expanded="false">
         <span>On this page</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M6 9l6 6 6-6"></path>
@@ -945,15 +975,9 @@ const {
       </button>
     </div>
 
-    <!-- Fullscreen dropdown under header -->
-    <div class="tocDropBackdrop" id="pageTocBackdrop" aria-hidden="true">
-      <div
-        class="tocDrop"
-        id="pageTocDrop"
-        role="dialog"
-        aria-modal="true"
-        aria-label="On this page"
-      >
+    <!-- TOC dropdown backdrop -->
+    <div class="tocDropBackdrop" id="tocDropBackdrop">
+      <div class="tocDrop">
         <div class="tocDropBody">
           <div class="toc" id="mobileToc">
             {
@@ -1073,6 +1097,38 @@ const {
     </div>
 
     <Footer />
+
+    <!-- Expand toggle script - use is:inline to avoid Astro hoisting -->
+    <script is:inline>
+      (function () {
+        var STORAGE_KEY = "magyar-notes-expanded";
+
+        // Restore saved state immediately
+        if (localStorage.getItem(STORAGE_KEY) === "true") {
+          document.documentElement.classList.add("expanded");
+        }
+
+        var btn = document.getElementById("expandBtn");
+        if (btn) {
+          btn.addEventListener("click", function () {
+            var isExpanded =
+              document.documentElement.classList.toggle("expanded");
+            localStorage.setItem(STORAGE_KEY, String(isExpanded));
+          });
+        } else {
+          // If button not found yet, wait for DOM
+          document.addEventListener("DOMContentLoaded", function () {
+            var btn2 = document.getElementById("expandBtn");
+            if (!btn2) return;
+            btn2.addEventListener("click", function () {
+              var isExpanded =
+                document.documentElement.classList.toggle("expanded");
+              localStorage.setItem(STORAGE_KEY, String(isExpanded));
+            });
+          });
+        }
+      })();
+    </script>
 
     <!-- Auto-highlight active TOC section -->
     <script>
@@ -1281,61 +1337,141 @@ const {
       })();
     </script>
 
+    <!-- Clone left sidebar tree into mobile lessons panel -->
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("pageTocBtn");
-        const backdrop = document.getElementById("pageTocBackdrop");
+      (() => {
+        const body = document.getElementById("lessonsPanelBody");
+        const source = document.querySelector(".left .asideSticky");
 
-        const lockScroll = (on: boolean): void => {
+        if (!(body instanceof HTMLElement) || !(source instanceof HTMLElement))
+          return;
+
+        body.innerHTML = "";
+        const clone = source.cloneNode(true);
+        body.appendChild(clone);
+
+        // Close panel when a lesson link is clicked
+        const panel = document.getElementById("lessonsPanel");
+        const btn = document.getElementById("lessonsMenuBtn");
+
+        body.addEventListener("click", (e: MouseEvent) => {
+          const t = e.target;
+          if (!(t instanceof Element)) return;
+
+          const a = t.closest("a[href]");
+          if (!(a instanceof HTMLAnchorElement)) return;
+
+          panel?.classList.remove("open");
+          panel?.setAttribute("aria-hidden", "true");
+          btn?.classList.remove("active");
+          document.documentElement.classList.remove("noScroll");
+          document.body.classList.remove("noScroll");
+        });
+      })();
+    </script>
+
+    <!-- Mobile TOC toggle -->
+    <script is:inline>
+      (function () {
+        var tocBtn = document.getElementById("tocToggleBtn");
+        var backdrop = document.getElementById("tocDropBackdrop");
+        if (!tocBtn || !backdrop) return;
+
+        var lockScroll = function (on) {
           document.documentElement.classList.toggle("noScroll", on);
           document.body.classList.toggle("noScroll", on);
-
-          btn?.setAttribute("aria-expanded", on ? "true" : "false");
-          backdrop?.setAttribute("aria-hidden", on ? "false" : "true");
         };
 
-        const open = () => {
-          backdrop?.classList.add("open");
+        var openToc = function () {
+          backdrop.classList.add("open");
+          tocBtn.setAttribute("aria-expanded", "true");
           lockScroll(true);
         };
 
-        const close = () => {
-          backdrop?.classList.remove("open");
+        var closeToc = function () {
+          backdrop.classList.remove("open");
+          tocBtn.setAttribute("aria-expanded", "false");
           lockScroll(false);
         };
 
-        btn?.addEventListener("click", () => {
-          if (!backdrop) return;
-          backdrop.classList.contains("open") ? close() : open();
+        tocBtn.addEventListener("click", function () {
+          if (backdrop.classList.contains("open")) closeToc();
+          else openToc();
         });
 
-        // tap outside sheet closes
-        backdrop?.addEventListener("click", (e: MouseEvent) => {
-          if (e.target === backdrop) close();
+        backdrop.addEventListener("click", function (e) {
+          if (e.target === backdrop) closeToc();
         });
 
-        document.addEventListener("keydown", (e: KeyboardEvent) => {
-          if (e.key === "Escape") close();
+        var links = backdrop.querySelectorAll("a");
+        for (var i = 0; i < links.length; i++) {
+          links[i].addEventListener("click", function () {
+            closeToc();
+          });
+        }
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && backdrop.classList.contains("open"))
+            closeToc();
         });
 
-        window.addEventListener("resize", () => {
-          if (window.matchMedia("(min-width: 1041px)").matches) close();
+        window.addEventListener("resize", function () {
+          if (window.matchMedia("(min-width: 1041px)").matches) closeToc();
         });
-      });
-    </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const setHeaderH = () => {
-          const h = document.getElementById("siteHeader");
-          if (!h) return;
-          const px = Math.ceil(h.getBoundingClientRect().height);
-          document.documentElement.style.setProperty("--header-h", px + "px");
-        };
+        // Active heading tracking — same logic for both desktop and mobile TOC
+        var headingEls = [];
+        var mobileTocLinks = document.querySelectorAll("[data-toc-link]");
+        // Also grab desktop sidebar TOC links if they exist
+        var desktopTocLinks = document.querySelectorAll(
+          ".right .asideSticky a[href^='#']",
+        );
 
-        setHeaderH();
-        window.addEventListener("resize", setHeaderH, { passive: true });
-      });
+        mobileTocLinks.forEach(function (link) {
+          var id = link.getAttribute("data-toc-link");
+          var el = document.getElementById(id);
+          if (el) headingEls.push({ id: id, el: el });
+        });
+
+        if (headingEls.length === 0) return;
+
+        var currentActive = null;
+
+        function updateActive() {
+          var found = null;
+          for (var i = headingEls.length - 1; i >= 0; i--) {
+            var rect = headingEls[i].el.getBoundingClientRect();
+            if (rect.top <= 120) {
+              found = headingEls[i].id;
+              break;
+            }
+          }
+          if (!found) found = headingEls[0].id;
+          if (found === currentActive) return;
+          currentActive = found;
+
+          // Update mobile TOC
+          mobileTocLinks.forEach(function (link) {
+            if (link.getAttribute("data-toc-link") === found) {
+              link.classList.add("active");
+            } else {
+              link.classList.remove("active");
+            }
+          });
+
+          // Update desktop TOC if present
+          desktopTocLinks.forEach(function (link) {
+            if (link.getAttribute("href") === "#" + found) {
+              link.classList.add("active");
+            } else {
+              link.classList.remove("active");
+            }
+          });
+        }
+
+        window.addEventListener("scroll", updateActive, { passive: true });
+        updateActive();
+      })();
     </script>
   </body>
 </html>

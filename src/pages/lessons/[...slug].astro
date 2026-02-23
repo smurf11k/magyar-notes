@@ -132,9 +132,13 @@ function sortByPath(a: string, b: string) {
 }
 
 export async function getStaticPaths() {
-  const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
-  return entries.map((e) => ({
-    params: { slug: stripMd(e.id) },
+  const lessons = await getCollection("lessons", ({ data }) => {
+    return data.hidden !== true;
+  });
+
+  return lessons.map((entry) => ({
+    params: { slug: stripMd(entry.id) },
+    props: { entry },
   }));
 }
 
@@ -145,7 +149,12 @@ const targetIdMdx = Array.isArray(slug)
   ? slug.join("/") + ".mdx"
   : slug + ".mdx";
 
-const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
+const entries: CollectionEntry<"lessons">[] = await getCollection(
+  "lessons",
+  ({ data }) => {
+    return data.hidden !== true;
+  },
+);
 // Try to find either .md or .mdx file
 const entry = entries.find((e) => e.id === targetIdMd || e.id === targetIdMdx);
 if (!entry) return new Response("Page not found", { status: 404 });

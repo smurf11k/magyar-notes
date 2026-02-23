@@ -1,10 +1,10 @@
 import { defineCollection, z } from "astro:content";
 
 const lessons = defineCollection({
-  type: "content",
   schema: z.object({
-    title: z.string().optional(),
+    title: z.string().default(""),
     description: z.string().optional(),
+    hidden: z.boolean().default(false),
     order: z.number().optional(),
   }),
 });

@@ -5,7 +5,7 @@ export interface Props {
   onlyLocal?: boolean;
 }
 
-const { text, label = "Listen", onlyLocal = false } = Astro.props;
+const { text, label = "", onlyLocal = false } = Astro.props;
 
 // unique per component instance
 const btnId = `tts-${Math.random().toString(36).slice(2)}`;
@@ -49,11 +49,14 @@ const btnId = `tts-${Math.random().toString(36).slice(2)}`;
     font-family: inherit;
   }
 
-  .ttsButton:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    transform: translateY(-1px);
+  /* Only apply hover effects on real hover devices (mouse/trackpad) */
+  @media (hover: hover) and (pointer: fine) {
+    .ttsButton:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
   }
 
   .ttsButton:active {

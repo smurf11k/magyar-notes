@@ -5,11 +5,13 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import { levelFromFolder, stripMd, orderFromPart } from "../lib/lesson-nav";
 
-const entries: CollectionEntry<"lessons">[] = await getCollection("lessons");
+const allLessons = await getCollection("lessons", ({ data }) => {
+  return data.hidden !== true;
+});
 
 // level folder = first path segment, e.g. "a1-lessons"
 const levelFolders = Array.from(
-  new Set(entries.map((e) => e.id.split("/")[0])),
+  new Set(allLessons.map((e) => e.id.split("/")[0])),
 );
 
 // Level descriptions
@@ -61,7 +63,7 @@ const levelColors: Record<
 
 // Function to get first lesson URL for a level
 function getFirstLessonUrl(levelFolder: string): string {
-  const levelEntries = entries.filter((e) =>
+  const levelEntries = allLessons.filter((e) =>
     e.id.startsWith(levelFolder + "/"),
   );
 
@@ -111,7 +113,7 @@ levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
 ---
 
 <Layout title="Magyar Notes">
-  <Header />
+  <Header showMenu={false} />
 
   <main class="home">
     <section class="hero">
