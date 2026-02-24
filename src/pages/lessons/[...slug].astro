@@ -3,7 +3,7 @@ import LessonLayout from "../../layouts/LessonLayout.astro";
 import Callout from "../../components/Callout.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-import { stripMd, titleFromPart, orderFromPart } from "../../lib/lesson-nav";
+import { stripMd, titleFromPart, orderFromPart, getFolderLabel } from "../../lib/lesson-nav";
 import Steps from "../../components/Steps.astro";
 
 type TreeNode = {
@@ -64,11 +64,16 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
       let child = cur.children.find((c) => c.name === part);
 
       if (!child) {
-        // For leaf nodes (files), use the frontmatter title if available
-        const label =
-          isLeaf && pathToTitle.has(accum)
-            ? pathToTitle.get(accum)!
-            : titleFromPart(part);
+        let label: string;
+        if (isLeaf && pathToTitle.has(accum)) {
+          // File node: use frontmatter title
+          label = pathToTitle.get(accum)!;
+        } else if (!isLeaf) {
+          // Folder node: use _meta.json label, fallback to prettified name
+          label = getFolderLabel(accum) ?? titleFromPart(part);
+        } else {
+          label = titleFromPart(part);
+        }
 
         child = {
           name: part,

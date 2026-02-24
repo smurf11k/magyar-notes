@@ -1,6 +1,27 @@
 import type { CollectionEntry } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
 
 export type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+
+const CONTENT_DIR = path.resolve("src/content/lessons");
+
+/**
+ * Read _meta.json from a folder path (relative to content/lessons).
+ * Returns the custom label if set, otherwise null.
+ */
+export function getFolderLabel(folderPath: string): string | null {
+  const metaPath = path.join(CONTENT_DIR, folderPath, "_meta.json");
+  try {
+    if (fs.existsSync(metaPath)) {
+      const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+      return meta.label || null;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
 
 export function levelFromFolder(folder: string): Level | null {
   const v = folder.toLowerCase();
@@ -97,4 +118,82 @@ export function getModulePages(
   });
 
   return pages;
+}
+
+export type TreeNode = {
+  name: string;
+  label: string;
+  path: string;
+  isFile: boolean;
+  isEmpty?: boolean;
+  children?: TreeNode[];
+};
+
+export function buildTree(lessons: CollectionEntry<"lessons">[]): TreeNode[] {
+  const root: TreeNode[] = [];
+  const folderMap = new Map<string, TreeNode>();
+
+  function getOrCreateFolder(folderParts: string[]): TreeNode {
+    const key = folderParts.join("/");
+    if (folderMap.has(key)) return folderMap.get(key)!;
+
+    const folderName = folderParts[folderParts.length - 1];
+    const node: TreeNode = {
+      name: folderName,
+      label: getFolderLabel(key) ?? titleFromPart(folderName),
+      path: key,
+      isFile: false,
+      children: [],
+    };
+
+    folderMap.set(key, node);
+
+    if (folderParts.length === 1) {
+      root.push(node);
+    } else {
+      const parent = getOrCreateFolder(folderParts.slice(0, -1));
+      parent.children!.push(node);
+    }
+
+    return node;
+  }
+
+  for (const entry of lessons) {
+    const clean = stripMd(entry.id);
+    const parts = clean.split("/");
+    const fileName = parts[parts.length - 1];
+    const folderParts = parts.slice(0, -1);
+
+    // Ensure all ancestor folders exist
+    const parent = getOrCreateFolder(folderParts);
+
+    const fileNode: TreeNode = {
+      name: fileName,
+      label: entry.data.title ?? titleFromPart(fileName),
+      path: clean,
+      isFile: true,
+      isEmpty: !entry.body || entry.body.trim().length === 0,
+    };
+
+    parent.children!.push(fileNode);
+  }
+
+  // Sort children at every level by order prefix
+  function sortChildren(nodes: TreeNode[]) {
+    nodes.sort((a, b) => {
+      const ao = orderFromPart(a.name);
+      const bo = orderFromPart(b.name);
+      if (ao !== bo) return ao - bo;
+      return a.name.localeCompare(b.name);
+    });
+    for (const node of nodes) {
+      if (node.children && node.children.length > 0) {
+        sortChildren(node.children);
+      }
+    }
+  }
+
+  sortChildren(root);
+
+  return root;
 }

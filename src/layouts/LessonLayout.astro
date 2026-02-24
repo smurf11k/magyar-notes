@@ -1006,8 +1006,8 @@ const {
       <!-- LEFT SIDEBAR -->
       <aside class="left">
         <div class="asideSticky">
-          <h3 class="side-title">Lessons</h3>
-          <p class="side-sub">Current level</p>
+          <h3 class="side-title">Заняття</h3>
+          <p class="side-sub">Поточний рівень</p>
           <TreeView tree={tree} activePath={activePath} />
         </div>
       </aside>
@@ -1070,13 +1070,13 @@ const {
       <!-- RIGHT SIDEBAR -->
       <aside class="right">
         <div class="asideSticky">
-          <h3 class="side-title">Page contents</h3>
-          <p class="side-sub">On this page</p>
+          <h3 class="side-title">Зміст сторінки</h3>
+          <p class="side-sub">На цій сторінці</p>
 
           <div class="toc" id="toc">
             {
               toc.length === 0 ? (
-                <div class="muted">No headings found.</div>
+                <div class="muted">Не знайдено заголовків</div>
               ) : (
                 toc
                   .filter((h) => h.depth >= 2 && h.depth < 5)
