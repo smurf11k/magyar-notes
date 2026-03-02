@@ -9,18 +9,18 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ## Головні питальні слова
 
-| Питальне слово  | Переклад        | Вимова                                 | Приклад                             |
-| --------------- | --------------- | -------------------------------------- | ----------------------------------- |
-| Mi?             | Що?             | <SpeakButton text="mi" label="N/A" />  | Mi ez? - Що це?                     |
-| Ki?             | Хто?            | <SpeakButton text="Ki" label="" />     | Ki ő? - Хто він?                    |
-| Hol?            | Де?             | <SpeakButton text="Hol" label="" />    | Hol vagy? - Де ти?                  |
-| Mikor?          | Коли?           | <SpeakButton text="Mikor" label="" />  | Mikor jössz? - Коли прийдеш?        |
-| Miért?          | Чому?           | <SpeakButton text="Miért" label="" />  | Miért tanulsz? - Чому ти вчишся?    |
-| Hogyan? / Hogy? | Як?             | <SpeakButton text="Hogyan" label="" /> | Hogy vagy? - Як справи?             |
-| Hány?           | Скільки?        | <SpeakButton text="Hány" label="" />   | Hány éves vagy? - Скільки років?    |
-| Mennyi?         | Скільки?        | <SpeakButton text="Mennyi" label="" /> | Mennyi az ára? - Скільки коштує?    |
-| Milyen?         | Який?           | <SpeakButton text="Milyen" label="" /> | Milyen a ház? - Який будинок?       |
-| Melyik?         | Який? / Котрий? | <SpeakButton text="Melyik" label="" /> | Melyik az autód? - Яка твоя машина? |
+| Питальне слово  | Переклад        | Вимова                        | Приклад                             |
+| --------------- | --------------- | ----------------------------- | ----------------------------------- |
+| Mi?             | Що?             | <SpeakButton text="mi" />     | Mi ez? - Що це?                     |
+| Ki?             | Хто?            | <SpeakButton text="Ki" />     | Ki ő? - Хто він?                    |
+| Hol?            | Де?             | <SpeakButton text="Hol" />    | Hol vagy? - Де ти?                  |
+| Mikor?          | Коли?           | <SpeakButton text="Mikor" />  | Mikor jössz? - Коли прийдеш?        |
+| Miért?          | Чому?           | <SpeakButton text="Miért" />  | Miért tanulsz? - Чому ти вчишся?    |
+| Hogyan? / Hogy? | Як?             | <SpeakButton text="Hogyan" /> | Hogy vagy? - Як справи?             |
+| Hány?           | Скільки?        | <SpeakButton text="Hány" />   | Hány éves vagy? - Скільки років?    |
+| Mennyi?         | Скільки?        | <SpeakButton text="Mennyi" /> | Mennyi az ára? - Скільки коштує?    |
+| Milyen?         | Який?           | <SpeakButton text="Milyen" /> | Milyen a ház? - Який будинок?       |
+| Melyik?         | Який? / Котрий? | <SpeakButton text="Melyik" /> | Melyik az autód? - Яка твоя машина? |
 
 ::tip
 
@@ -62,7 +62,7 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 - Mi az? //Що таке?//
 - Gyere velem játszani //Ходи зі мною гратися//
 
-Більш привітною і формальною відповіддю в такій ситуації буде **Tessék?** - що теж може означати "Що таке?" залежно від контексту.
+Більш привітною і формальною відповіддю в такій ситуації буде **Tessék?** <SpeakButton text="Tessék" label="N/A" /> - що теж може означати "Що таке?" залежно від контексту.
 
 ::
 
@@ -173,14 +173,14 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 ### Корисні відповіді на "Mikor?":
 
-- **most** - зараз
-- **ma** - сьогодні
-- **holnap** - завтра
-- **tegnap** - вчора
-- **reggel** - вранці
-- **délben** - в обід
-- **este** - ввечері
-- **éjjel** - вночі
+- **most** <SpeakButton text="Most" label="N/A" onlyLocal/> - зараз
+- **ma** <SpeakButton text="Ma" label="N/A" onlyLocal /> - сьогодні
+- **holnap** <SpeakButton text="Holnap" /> - завтра
+- **tegnap** <SpeakButton text="Tegnap" /> - вчора
+- **reggel** <SpeakButton text="Reggel" /> - вранці
+- **délben** <SpeakButton text="Délben" label="N/A" /> - в обід
+- **este** <SpeakButton text="Este" label="N/A" onlyLocal/> - ввечері
+- **éjjel** <SpeakButton text="Éjjel" /> - вночі
 
 ---
 

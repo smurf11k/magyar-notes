@@ -94,20 +94,20 @@ import SpeakButton from "../../../../components/SpeakButton.astro";
 
 Місяці також пишуться з **маленької літери**:
 
-| Номер | Українською | Угорською  | Вимова                                                |
-| ----- | ----------- | ---------- | ----------------------------------------------------- |
-| 1     | січень      | január     | <SpeakButton text="Január" label="" />                |
-| 2     | лютий       | február    | <SpeakButton text="Február" label="" />               |
-| 3     | березень    | március    | <SpeakButton text="Március" label="" />               |
-| 4     | квітень     | április    | <SpeakButton text="Április" label="" />               |
-| 5     | травень     | május      | <SpeakButton text="Május" label="" />                 |
-| 6     | червень     | június     | <SpeakButton text="Június" label="" />                |
-| 7     | липень      | július     | <SpeakButton text="Július" label="" />                |
-| 8     | серпень     | augusztus  | <SpeakButton text="Augusztus" label="" />             |
-| 9     | вересень    | szeptember | <SpeakButton text="Szeptember" label="" />            |
-| 10    | жовтень     | október    | <SpeakButton text="Október" label="" />               |
-| 11    | листопад    | november   | <SpeakButton text="november" label="N/A" onlyLocal /> |
-| 12    | грудень     | december   | <SpeakButton text="december" label="N/A" onlyLocal /> |
+| Номер | Українською | Угорською  | Вимова                                    |
+| ----- | ----------- | ---------- | ----------------------------------------- |
+| 1     | січень      | január     | <SpeakButton text="Január" />             |
+| 2     | лютий       | február    | <SpeakButton text="Február" />            |
+| 3     | березень    | március    | <SpeakButton text="Március" />            |
+| 4     | квітень     | április    | <SpeakButton text="Április" />            |
+| 5     | травень     | május      | <SpeakButton text="Május" />              |
+| 6     | червень     | június     | <SpeakButton text="Június" />             |
+| 7     | липень      | július     | <SpeakButton text="Július" />             |
+| 8     | серпень     | augusztus  | <SpeakButton text="Augusztus" />          |
+| 9     | вересень    | szeptember | <SpeakButton text="Szeptember" />         |
+| 10    | жовтень     | október    | <SpeakButton text="Október" />            |
+| 11    | листопад    | november   | <SpeakButton text="november" onlyLocal /> |
+| 12    | грудень     | december   | <SpeakButton text="december" onlyLocal /> |
 
 ::tip
 
@@ -195,7 +195,8 @@ Hányadika / Hanyadika
 - **3.** = harmadika - третє
 - **15.** = tizenötödike - п'ятнадцяте
 - **31.** = harmincegyedike - тридцять перше
-  ::warning
+
+::warning
 
 **Увага на формат**:
 
@@ -210,12 +211,12 @@ Hányadika / Hanyadika
 
 ## Пори року
 
-| Українською | Угорською | Вимова                                 |
-| ----------- | --------- | -------------------------------------- |
-| весна       | tavasz    | <SpeakButton text="Tavasz" label="" /> |
-| літо        | nyár      | <SpeakButton text="Nyár" label="" />   |
-| осінь       | ősz       | <SpeakButton text="Ősz" label="" />    |
-| зима        | tél       | <SpeakButton text="Tél" label="" />    |
+| Українською | Угорською | Вимова                        |
+| ----------- | --------- | ----------------------------- |
+| весна       | tavasz    | <SpeakButton text="Tavasz" /> |
+| літо        | nyár      | <SpeakButton text="Nyár" />   |
+| осінь       | ősz       | <SpeakButton text="Ősz" />    |
+| зима        | tél       | <SpeakButton text="Tél" />    |
 
 ### З порами року:
 
@@ -237,27 +238,27 @@ Hányadika / Hanyadika
 
 ### Минулий час:
 
-- **tegnap** - вчора
-- **tegnapelőtt** - позавчора
-- **múlt héten** - минулого тижня
-- **múlt hónapban** - минулого місяця
-- **tavaly** - торік
+- **tegnap** <SpeakButton text="Tegnap" /> - вчора
+- **tegnapelőtt** <SpeakButton text="Tegnapelőtt" label="N/A" /> - позавчора
+- **múlt héten** <SpeakButton text="múlt-héten" label="N/A" /> - минулого тижня
+- **múlt hónapban** <SpeakButton text="múlt-hónapban" label="N/A"/> - минулого місяця
+- **tavaly** <SpeakButton text="Tavaly" /> - торік
 
 ### Теперішній час:
 
-- **ma** - сьогодні
-- **most** - зараз
-- **ezen a héten** - цього тижня
-- **ebben a hónapban** - цього місяця
-- **idén** - цього року
+- **ma** <SpeakButton text="Ma" label="N/A" onlyLocal /> - сьогодні
+- **most** <SpeakButton text="Most" label="N/A" onlyLocal /> - зараз
+- **ezen a héten** <SpeakButton text="ezen-a-héten" label="N/A" /> - цього тижня
+- **ebben a hónapban** <SpeakButton text="ebben-a-hónapban" label="N/A" /> - цього місяця
+- **idén** <SpeakButton text="Idén" /> - цього року
 
 ### Майбутній час:
 
-- **holnap** - завтра
-- **holnapután** - післязавтра
-- **jövő héten** - наступного тижня
-- **jövő hónapban** - наступного місяця
-- **jövőre** - наступного року
+- **holnap** <SpeakButton text="Holnap" /> - завтра
+- **holnapután** <SpeakButton text="Holnapután" label="N/A" /> - післязавтра
+- **jövő héten** <SpeakButton text="Jövő héten" label="N/A" /> - наступного тижня
+- **jövő hónapban** <SpeakButton text="Jövő hónapban" label="N/A" /> - наступного місяця
+- **jövőre** <SpeakButton text="Jövőre" /> - наступного року
 
 ---
 
