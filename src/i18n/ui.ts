@@ -53,7 +53,7 @@ export const UI_TEXT: Record<Lang, UiDictionary> = {
       viewOnGithubAria: "View on GitHub",
       toggleThemeAria: "Toggle theme",
       openLessonsMenuAria: "Open lessons menu",
-      toggleFullWidthViewAria: "Toggle full-width view",
+      toggleFullWidthViewAria: "Toggle fullscreen view",
       languageSwitchAria: "Switch language",
     },
     home: {
@@ -72,7 +72,7 @@ export const UI_TEXT: Record<Lang, UiDictionary> = {
     footer: {
       noteLabel: "Note:",
       disclaimerBody:
-        "these materials were created by a native Hungarian speaker for lessons with a student. These are personal study notes, not certified teaching material. If they were useful for you, you are welcome to support this project.",
+        "these materials were created by a native Hungarian speaker for lessons with a student. These are personal study notes, not certified teaching material. If they were useful for you, feel free to support this project.",
       supportViaPayPal: "Support via PayPal",
       copyrightSuffix: "Made with ❤️ for language learners.",
     },
