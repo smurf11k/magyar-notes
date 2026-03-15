@@ -3,13 +3,32 @@ export interface Props {
   title?: string;
   showExpand?: boolean;
   showMenu?: boolean;
+  lang?: string;
 }
+
+import { getUi } from "../i18n/ui";
+import { LANGUAGE_NAMES, SUPPORTED_LANGS } from "../i18n/ui";
+import {
+  DEFAULT_LANG,
+  localizedPath,
+  normalizeLang,
+  type Lang,
+} from "../i18n/routing";
 
 const {
   title = "Magyar Notes",
   showExpand = false,
   showMenu = true,
+  lang = DEFAULT_LANG,
 } = Astro.props;
+
+const currentLang = normalizeLang(lang);
+const currentLangCode = currentLang.toUpperCase();
+const ui = getUi(currentLang);
+const langHrefByLang: Record<Lang, string> = {
+  en: localizedPath(Astro.url.pathname, "en"),
+  ua: localizedPath(Astro.url.pathname, "ua"),
+};
 ---
 
 <header class="header" id="siteHeader">
@@ -23,8 +42,8 @@ const {
           class="expandBtn"
           id="expandBtn"
           type="button"
-          aria-label="Toggle full-width view"
-          title="Toggle full-width view"
+          aria-label={ui.header.toggleFullWidthViewAria}
+          title={ui.header.toggleFullWidthViewAria}
         >
           <svg
             class="icon icon-expand"
@@ -54,12 +73,77 @@ const {
       )
     }
 
+    <div
+      class="langSelectWrap"
+      id="langSelectWrap"
+      title={ui.header.languageSwitchAria}
+    >
+      <!-- keep the hidden native select for form/a11y fallback -->
+      <select
+        class="langSelect"
+        id="langSelect"
+        aria-label={ui.header.languageSwitchAria}
+        style="display:none"
+      >
+        {
+          SUPPORTED_LANGS.map((optionLang) => (
+            <option value={optionLang} selected={currentLang === optionLang}>
+              {LANGUAGE_NAMES[optionLang]}
+            </option>
+          ))
+        }
+      </select>
+
+      <!-- Custom trigger button -->
+      <button
+        class="langTrigger"
+        id="langTrigger"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+      >
+        <span class="langCurrentCode" id="langCurrentCode" aria-hidden="true"
+          >{currentLangCode}</span
+        >
+        <svg
+          class="langSelectIcon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </button>
+
+      <!-- Custom dropdown panel -->
+      <ul
+        class="langDropdown"
+        id="langDropdown"
+        role="listbox"
+        aria-label={ui.header.languageSwitchAria}
+      >
+        {
+          SUPPORTED_LANGS.map((optionLang) => (
+            <li
+              class={`langOption${currentLang === optionLang ? " langOption--active" : ""}`}
+              data-lang={optionLang}
+              role="option"
+              aria-selected={currentLang === optionLang ? "true" : "false"}
+            >
+              {LANGUAGE_NAMES[optionLang]}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
     <a
       href="https://github.com/smurf11k/magyar-notes"
       target="_blank"
       rel="noopener noreferrer"
       class="navLink"
-      aria-label="View on GitHub"
+      aria-label={ui.header.viewOnGithubAria}
     >
       <svg
         class="icon"
@@ -73,7 +157,11 @@ const {
       </svg>
     </a>
 
-    <button class="themeToggle" id="themeToggle" aria-label="Toggle theme">
+    <button
+      class="themeToggle"
+      id="themeToggle"
+      aria-label={ui.header.toggleThemeAria}
+    >
       <svg
         class="icon sunIcon"
         viewBox="0 0 24 24"
@@ -107,7 +195,7 @@ const {
         <button
           class="menuBtn"
           id="lessonsMenuBtn"
-          aria-label="Open lessons menu"
+          aria-label={ui.header.openLessonsMenuAria}
         >
           <svg
             class="icon menuIcon"
@@ -224,6 +312,118 @@ const {
       background 0.15s ease,
       transform 0.15s ease;
     border-radius: 8px;
+  }
+
+  .langSelectWrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    min-width: 56px;
+    padding: 0 6px 0 8px;
+    border-radius: 0;
+    background: transparent;
+    position: relative;
+    margin-left: -10px;
+  }
+
+  .langSelectWrap {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .langTrigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 6px 4px 8px;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+
+  .langCurrentCode {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: var(--accent);
+    user-select: none;
+  }
+
+  .langSelectIcon {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.25;
+    color: var(--muted);
+    transition:
+      transform 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .langTrigger:hover .langSelectIcon,
+  .langSelectWrap.open .langSelectIcon {
+    color: var(--accent);
+  }
+
+  .langSelectWrap.open .langSelectIcon {
+    transform: rotate(180deg);
+  }
+
+  .langDropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    border-radius: 12px;
+    background: #1a1a22;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    min-width: 120px;
+    z-index: 200;
+  }
+
+  :global([data-theme="light"]) .langDropdown {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .langSelectWrap.open .langDropdown {
+    display: block;
+  }
+
+  .langOption {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .langOption:hover {
+    color: var(--accent);
+  }
+
+  .langOption--active {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  :global([data-theme="light"]) .langOption {
+    color: #555;
+  }
+  :global([data-theme="light"]) .langOption--active {
+    color: var(--accent);
   }
 
   .themeToggle:hover {
@@ -357,9 +557,60 @@ const {
   }
 </style>
 
-<script>
+<script define:vars={{ currentLang, langHrefByLang }}>
   // Theme toggle functionality
   const toggle = document.getElementById("themeToggle");
+  const langCurrentCode = document.getElementById("langCurrentCode");
+  const langTrigger = document.getElementById("langTrigger");
+  const langDropdown = document.getElementById("langDropdown");
+  const langSelectWrap = document.getElementById("langSelectWrap");
+
+  const LANGUAGE_STORAGE_KEY = "lang";
+
+  const preferredLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  if (
+    (preferredLang === "en" || preferredLang === "ua") &&
+    preferredLang !== currentLang
+  ) {
+    const targetPath = langHrefByLang[preferredLang];
+    if (targetPath && targetPath !== window.location.pathname) {
+      const suffix = window.location.search + window.location.hash;
+      window.location.replace(targetPath + suffix);
+    }
+  } else {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+  }
+
+  // Custom dropdown toggle
+  langTrigger?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    langSelectWrap?.classList.toggle("open");
+    langTrigger.setAttribute(
+      "aria-expanded",
+      langSelectWrap?.classList.contains("open") ? "true" : "false",
+    );
+  });
+
+  // Close on outside click
+  document.addEventListener("click", () => {
+    langSelectWrap?.classList.remove("open");
+    langTrigger?.setAttribute("aria-expanded", "false");
+  });
+
+  // Option selection
+  langDropdown?.querySelectorAll(".langOption").forEach((option) => {
+    option.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const selected = option.dataset.lang;
+      if (selected !== "en" && selected !== "ua") return;
+      if (langCurrentCode) langCurrentCode.textContent = selected.toUpperCase();
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, selected);
+      const targetPath = langHrefByLang[selected];
+      if (!targetPath) return;
+      const suffix = window.location.search + window.location.hash;
+      window.location.assign(targetPath + suffix);
+    });
+  });
 
   const currentTheme = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", currentTheme);
@@ -367,7 +618,6 @@ const {
   toggle?.addEventListener("click", () => {
     const theme = document.documentElement.getAttribute("data-theme");
     const newTheme = theme === "dark" ? "light" : "dark";
-
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   });
@@ -380,13 +630,11 @@ const {
     "scroll",
     () => {
       const currentScroll = window.scrollY;
-
       if (currentScroll > 50) {
         header?.classList.add("scrolled");
       } else {
         header?.classList.remove("scrolled");
       }
-
       lastScroll = currentScroll;
     },
     { passive: true },
@@ -398,9 +646,14 @@ const {
     const btn = document.getElementById("lessonsMenuBtn");
     const panel = document.getElementById("lessonsPanel");
 
-    const lockScroll = (on: boolean) => {
-      document.documentElement.classList.toggle("noScroll", on);
-      document.body.classList.toggle("noScroll", on);
+    const lockScrollOn = () => {
+      document.documentElement.classList.add("noScroll");
+      document.body.classList.add("noScroll");
+    };
+
+    const lockScrollOff = () => {
+      document.documentElement.classList.remove("noScroll");
+      document.body.classList.remove("noScroll");
     };
 
     const open = () => {
@@ -408,7 +661,7 @@ const {
       panel.classList.add("open");
       panel.setAttribute("aria-hidden", "false");
       btn.classList.add("active");
-      lockScroll(true);
+      lockScrollOn();
     };
 
     const close = () => {
@@ -416,7 +669,7 @@ const {
       panel.classList.remove("open");
       panel.setAttribute("aria-hidden", "true");
       btn.classList.remove("active");
-      lockScroll(false);
+      lockScrollOff();
     };
 
     const toggle = () => {
@@ -426,7 +679,7 @@ const {
 
     btn?.addEventListener("click", toggle);
 
-    document.addEventListener("keydown", (e: KeyboardEvent) => {
+    document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && panel?.classList.contains("open")) close();
     });
 

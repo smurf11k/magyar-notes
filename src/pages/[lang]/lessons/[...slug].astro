@@ -1,0 +1,341 @@
+---
+import LessonLayout from "../../../layouts/LessonLayout.astro";
+import Callout from "../../../components/Callout.astro";
+import { getCollection, render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import {
+  stripMd,
+  titleFromPart,
+  orderFromPart,
+  getFolderLabel,
+} from "../../../lib/lesson-nav";
+import Steps from "../../../components/Steps.astro";
+import {
+  belongsToLang,
+  contentFolderForLang,
+  contentLangFromId,
+  DEFAULT_LANG,
+  isValidNonDefaultLangRoute,
+  makeLocalizedLessonHref,
+  normalizeLang,
+  SUPPORTED_LANGS,
+  stripContentLangPrefix,
+  withContentLangPrefix,
+} from "../../../i18n/routing";
+
+type TreeNode = {
+  name: string;
+  label: string;
+  marker?: string;
+  path: string;
+  isFile: boolean;
+  isEmpty?: boolean;
+  children?: TreeNode[];
+};
+
+type ResolvedLesson = {
+  entry: CollectionEntry<"lessons">;
+  cleanPath: string;
+  title: string;
+  isEmpty: boolean;
+  marker?: string;
+};
+
+type NavItem = {
+  id: string;
+  href: string;
+  title: string;
+  description?: string;
+};
+
+function resolveDisplayTitle(
+  title: string | undefined,
+  fallbackPart: string,
+): string {
+  const normalized = title?.trim();
+  return normalized && normalized.length > 0
+    ? normalized
+    : titleFromPart(fallbackPart);
+}
+
+function buildTree(
+  lessons: ResolvedLesson[],
+  primaryLangContentFolder: string,
+  fallbackLangContentFolder: string,
+): TreeNode[] {
+  const root: TreeNode = {
+    name: "",
+    label: "",
+    path: "",
+    isFile: false,
+    children: [],
+  };
+
+  const pathToTitle = new Map<string, string>();
+  for (const lesson of lessons) {
+    pathToTitle.set(lesson.cleanPath, lesson.title);
+  }
+
+  const pathToEmpty = new Map<string, boolean>();
+  const pathToMarker = new Map<string, string | undefined>();
+  for (const lesson of lessons) {
+    pathToEmpty.set(lesson.cleanPath, lesson.isEmpty);
+    pathToMarker.set(lesson.cleanPath, lesson.marker);
+  }
+
+  for (const lesson of lessons) {
+    const clean = lesson.cleanPath;
+    const parts = clean.split("/");
+
+    let cur = root;
+    let accum = "";
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      accum = accum ? `${accum}/${part}` : part;
+      const isLeaf = i === parts.length - 1;
+
+      cur.children ??= [];
+      let child = cur.children.find((c) => c.name === part);
+
+      if (!child) {
+        let label: string;
+        if (isLeaf && pathToTitle.has(accum)) {
+          label = pathToTitle.get(accum)!;
+        } else if (!isLeaf) {
+          label =
+            getFolderLabel(`${primaryLangContentFolder}/${accum}`) ??
+            getFolderLabel(`${fallbackLangContentFolder}/${accum}`) ??
+            getFolderLabel(accum) ??
+            titleFromPart(part);
+        } else {
+          label = titleFromPart(part);
+        }
+
+        child = {
+          name: part,
+          label,
+          marker: isLeaf ? pathToMarker.get(accum) : undefined,
+          path: accum,
+          isFile: isLeaf,
+          isEmpty: isLeaf ? (pathToEmpty.get(accum) ?? false) : undefined,
+          children: [],
+        };
+        cur.children.push(child);
+      }
+
+      if (!isLeaf) child.isFile = false;
+      cur = child;
+    }
+  }
+
+  function pruneEmpty(nodes: TreeNode[]): TreeNode[] {
+    return nodes
+      .map((n) => ({
+        ...n,
+        children: n.children ? pruneEmpty(n.children) : [],
+      }))
+      .filter((n) => {
+        if (n.isFile) return !n.isEmpty;
+        return (n.children?.length ?? 0) > 0;
+      });
+  }
+
+  function sortNodes(nodes: TreeNode[]) {
+    nodes.sort((a, b) => {
+      if (a.isFile !== b.isFile) return a.isFile ? 1 : -1;
+      const ao = orderFromPart(a.name);
+      const bo = orderFromPart(b.name);
+      if (ao !== bo) return ao - bo;
+      return a.label.localeCompare(b.label);
+    });
+    for (const n of nodes) {
+      if (n.children?.length) sortNodes(n.children);
+    }
+  }
+
+  sortNodes(root.children!);
+  return pruneEmpty(root.children!);
+}
+
+function sortByPath(a: string, b: string) {
+  const ap = stripMd(a).split("/");
+  const bp = stripMd(b).split("/");
+  const max = Math.max(ap.length, bp.length);
+
+  for (let i = 0; i < max; i++) {
+    const ao = orderFromPart(ap[i] ?? "");
+    const bo = orderFromPart(bp[i] ?? "");
+    if (ao !== bo) return ao - bo;
+
+    const cmp = (ap[i] ?? "").localeCompare(bp[i] ?? "");
+    if (cmp !== 0) return cmp;
+  }
+  return 0;
+}
+
+export async function getStaticPaths() {
+  const lessons = await getCollection("lessons", ({ data }) => {
+    return data.hidden !== true;
+  });
+
+  const nonDefaultLangs = SUPPORTED_LANGS.filter((l) => l !== DEFAULT_LANG);
+  const defaultSlugs = lessons
+    .filter((entry) => belongsToLang(entry.id, DEFAULT_LANG))
+    .map((entry) => stripMd(stripContentLangPrefix(entry.id)));
+
+  const slugMap = new Map<string, Set<string>>();
+  for (const lang of nonDefaultLangs) {
+    slugMap.set(lang, new Set(defaultSlugs));
+  }
+
+  for (const entry of lessons) {
+    const contentLang = contentLangFromId(entry.id);
+    if (contentLang === DEFAULT_LANG) continue;
+    slugMap.get(contentLang)?.add(stripMd(stripContentLangPrefix(entry.id)));
+  }
+
+  return nonDefaultLangs.flatMap((lang) => {
+    const slugs = slugMap.get(lang) ?? new Set<string>();
+    return Array.from(slugs).map((slug) => ({
+      params: { lang, slug },
+    }));
+  });
+}
+
+if (!isValidNonDefaultLangRoute(Astro.params.lang)) {
+  return new Response("Page not found", { status: 404 });
+}
+
+const lang = normalizeLang(Astro.params.lang);
+const slug = Astro.params.slug!;
+const targetIdMd = Array.isArray(slug) ? slug.join("/") + ".md" : slug + ".md";
+const targetIdMdx = Array.isArray(slug)
+  ? slug.join("/") + ".mdx"
+  : slug + ".mdx";
+
+const prefixedTargetMd = withContentLangPrefix(targetIdMd, lang);
+const prefixedTargetMdx = withContentLangPrefix(targetIdMdx, lang);
+const prefixedDefaultTargetMd = withContentLangPrefix(targetIdMd, DEFAULT_LANG);
+const prefixedDefaultTargetMdx = withContentLangPrefix(
+  targetIdMdx,
+  DEFAULT_LANG,
+);
+
+const entries: CollectionEntry<"lessons">[] = await getCollection(
+  "lessons",
+  ({ data }) => {
+    return data.hidden !== true;
+  },
+);
+
+const isEntryEmpty = (e: CollectionEntry<"lessons">) =>
+  (e.body ?? "").replace(/<[^>]*>/g, "").trim().length === 0;
+
+const langEntries = entries.filter((e) => belongsToLang(e.id, lang));
+const translatedEntry = langEntries.find(
+  (e) => e.id === prefixedTargetMd || e.id === prefixedTargetMdx,
+);
+const defaultEntries = entries.filter((e) => belongsToLang(e.id, DEFAULT_LANG));
+const fallbackEntry = defaultEntries.find(
+  (e) =>
+    e.id === prefixedDefaultTargetMd ||
+    e.id === prefixedDefaultTargetMdx ||
+    e.id === targetIdMd ||
+    e.id === targetIdMdx,
+);
+
+const entry =
+  translatedEntry && !isEntryEmpty(translatedEntry)
+    ? translatedEntry
+    : (fallbackEntry ?? translatedEntry);
+if (!entry) return new Response("Page not found", { status: 404 });
+
+const { Content, headings } = await render(entry);
+
+const levelFolder = stripContentLangPrefix(entry.id).split("/")[0];
+const levelLangEntries = langEntries.filter((e) =>
+  stripContentLangPrefix(e.id).startsWith(levelFolder + "/"),
+);
+const levelDefaultEntries = defaultEntries.filter((e) =>
+  stripContentLangPrefix(e.id).startsWith(levelFolder + "/"),
+);
+
+const translatedByPath = new Map<string, CollectionEntry<"lessons">>();
+for (const e of levelLangEntries) {
+  translatedByPath.set(stripMd(stripContentLangPrefix(e.id)), e);
+}
+
+const defaultByPath = new Map<string, CollectionEntry<"lessons">>();
+for (const e of levelDefaultEntries) {
+  defaultByPath.set(stripMd(stripContentLangPrefix(e.id)), e);
+}
+
+const allPaths = Array.from(
+  new Set([...translatedByPath.keys(), ...defaultByPath.keys()]),
+).sort(sortByPath);
+
+const fallbackMarker = DEFAULT_LANG.toUpperCase();
+const resolvedLevelLessons: ResolvedLesson[] = [];
+for (const cleanPath of allPaths) {
+  const translated = translatedByPath.get(cleanPath);
+  const fallback = defaultByPath.get(cleanPath);
+  const selected =
+    translated && !isEntryEmpty(translated)
+      ? translated
+      : (fallback ?? translated);
+  if (!selected) continue;
+
+  const parts = cleanPath.split("/");
+  const last = parts[parts.length - 1];
+
+  const resolvedLesson: ResolvedLesson = {
+    entry: selected,
+    cleanPath,
+    title: resolveDisplayTitle(selected.data.title, last),
+    isEmpty: isEntryEmpty(selected),
+  };
+
+  if (selected === fallback) {
+    resolvedLesson.marker = fallbackMarker;
+  }
+
+  resolvedLevelLessons.push(resolvedLesson);
+}
+
+const tree = buildTree(
+  resolvedLevelLessons,
+  contentFolderForLang(lang),
+  contentFolderForLang(DEFAULT_LANG),
+);
+const activePath = stripMd(stripContentLangPrefix(entry.id));
+
+const ordered: NavItem[] = resolvedLevelLessons
+  .filter((lesson) => !lesson.isEmpty)
+  .map((lesson) => ({
+    id: lesson.cleanPath,
+    href: makeLocalizedLessonHref(lesson.cleanPath, lang),
+    title: lesson.title,
+    description: lesson.entry.data.description ?? "",
+  }));
+
+const idx = ordered.findIndex((x) => x.id === activePath);
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
+
+const pageTitle = entry.data.title ?? "Lesson";
+const description = entry.data.description ?? titleFromPart(levelFolder);
+---
+
+<LessonLayout
+  title={`${pageTitle} | Magyar Notes`}
+  description={description}
+  toc={headings}
+  tree={tree}
+  activePath={activePath}
+  prev={prev}
+  next={next}
+  lang={lang}
+>
+  <Content components={{ Callout, Steps }} />
+</LessonLayout>

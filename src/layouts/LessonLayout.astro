@@ -3,6 +3,8 @@ import TreeView from "../components/TreeView.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import type { TreeNode } from "../components/TreeNodeItem.astro";
+import { getUi } from "../i18n/ui";
+import { normalizeLang } from "../i18n/routing";
 
 type TocItem = { depth: number; slug: string; text: string };
 type NavItem = { href: string; title: string; description?: string };
@@ -15,6 +17,8 @@ const {
   activePath = "",
   prev = null,
   next = null,
+  lang = "en",
+  contentLangMarker = null,
 } = Astro.props as {
   title: string;
   description?: string;
@@ -23,10 +27,15 @@ const {
   activePath: string;
   prev?: NavItem | null;
   next?: NavItem | null;
+  lang?: string;
+  contentLangMarker?: string | null;
 };
+
+const resolvedLang = normalizeLang(lang);
+const ui = getUi(resolvedLang);
 ---
 
-<html lang="en">
+<html lang={resolvedLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -48,7 +57,7 @@ const {
         --panel2: rgba(255, 255, 255, 0.02);
         --line: rgba(255, 255, 255, 0.1);
         --accent: #f97316;
-        --left-w: 320px;
+        --left-w: 330px;
         --right-w: 300px;
 
         --font-reading: "IBM Plex Sans", system-ui, -apple-system;
@@ -151,6 +160,15 @@ const {
       main {
         padding: 18px 22px 80px;
         box-sizing: border-box;
+      }
+
+      .contentLangMarker {
+        margin: 0 0 10px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        color: var(--muted);
       }
 
       .content :global(h1) {
@@ -357,6 +375,7 @@ const {
         padding: 4px 0;
         font-size: 13px;
         line-height: 1.25;
+        font-weight: 400;
         color: var(--muted);
         transition: color 0.14s ease;
       }
@@ -371,7 +390,15 @@ const {
 
       .node.active {
         color: var(--accent);
-        font-weight: 700;
+        font-weight: 500;
+      }
+
+      .nodeMarker {
+        margin-left: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: var(--muted);
       }
 
       .navhead {
@@ -413,7 +440,7 @@ const {
 
       .toc a.active {
         color: var(--accent);
-        font-weight: 700;
+        font-weight: 500;
       }
 
       .toc a.d2 {
@@ -963,12 +990,12 @@ const {
   </script>
 
   <body>
-    <Header showExpand={true} />
+    <Header showExpand={true} lang={resolvedLang} />
 
     <!-- Mobile "On this page" bar -->
     <div class="mobileTocBar">
       <button class="tocBtn" id="tocToggleBtn" aria-expanded="false">
-        <span>On this page</span>
+        <span>{ui.lesson.mobileOnThisPage}</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M6 9l6 6 6-6"></path>
         </svg>
@@ -982,7 +1009,7 @@ const {
           <div class="toc" id="mobileToc">
             {
               toc.length === 0 ? (
-                <div class="muted">No headings found.</div>
+                <div class="muted">{ui.lesson.noHeadingsFound}</div>
               ) : (
                 toc
                   .filter((h) => h.depth >= 2 && h.depth < 5)
@@ -1006,9 +1033,9 @@ const {
       <!-- LEFT SIDEBAR -->
       <aside class="left">
         <div class="asideSticky">
-          <h3 class="side-title">Заняття</h3>
-          <p class="side-sub">Поточний рівень</p>
-          <TreeView tree={tree} activePath={activePath} />
+          <h3 class="side-title">{ui.lesson.lessons}</h3>
+          <p class="side-sub">{ui.lesson.currentLevel}</p>
+          <TreeView tree={tree} activePath={activePath} lang={resolvedLang} />
         </div>
       </aside>
 
@@ -1022,7 +1049,7 @@ const {
 
         {
           (prev || next) && (
-            <nav class="pager" aria-label="Lesson navigation">
+            <nav class="pager" aria-label={ui.lesson.navAriaLabel}>
               {prev ? (
                 <a class="pagerCard prev" href={prev.href}>
                   <div class="pagerArrow">
@@ -1032,7 +1059,7 @@ const {
                   </div>
 
                   <div class="pagerMeta">
-                    <div class="pagerLabel">Назад</div>
+                    <div class="pagerLabel">{ui.lesson.previous}</div>
                     <div class="pagerTitle">{prev.title}</div>
                     {prev.description && (
                       <div class="pagerDesc">{prev.description}</div>
@@ -1052,7 +1079,7 @@ const {
                   </div>
 
                   <div class="pagerMeta">
-                    <div class="pagerLabel">Далі</div>
+                    <div class="pagerLabel">{ui.lesson.next}</div>
                     <div class="pagerTitle">{next.title}</div>
                     {next.description && (
                       <div class="pagerDesc">{next.description}</div>
@@ -1070,13 +1097,13 @@ const {
       <!-- RIGHT SIDEBAR -->
       <aside class="right">
         <div class="asideSticky">
-          <h3 class="side-title">Зміст сторінки</h3>
-          <p class="side-sub">На цій сторінці</p>
+          <h3 class="side-title">{ui.lesson.pageContentsTitle}</h3>
+          <p class="side-sub">{ui.lesson.onThisPage}</p>
 
           <div class="toc" id="toc">
             {
               toc.length === 0 ? (
-                <div class="muted">Не знайдено заголовків</div>
+                <div class="muted">{ui.lesson.noHeadingsFound}</div>
               ) : (
                 toc
                   .filter((h) => h.depth >= 2 && h.depth < 5)
@@ -1096,7 +1123,7 @@ const {
       </aside>
     </div>
 
-    <Footer />
+    <Footer lang={resolvedLang} />
 
     <!-- Expand toggle script - use is:inline to avoid Astro hoisting -->
     <script is:inline>

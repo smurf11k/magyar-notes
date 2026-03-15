@@ -1,17 +1,21 @@
 ---
 export interface Props {
   paypalLink?: string;
+  lang?: string;
 }
 
-const { paypalLink = "https://paypal.me/smurf11k" } = Astro.props;
+import { getUi } from "../i18n/ui";
+import { normalizeLang } from "../i18n/routing";
+
+const { paypalLink = "https://paypal.me/smurf11k", lang = "en" } = Astro.props;
+const ui = getUi(normalizeLang(lang));
 ---
 
 <footer class="footer">
   <div class="footerContent">
     <p class="disclaimer">
-      <strong>Примітка:</strong> матеріали створені носієм угорської мови для занять
-      зі студентом. Це особисті навчальні нотатки, а не матеріал сертифікованого викладача.
-      Якщо вони були вам корисними — підтримка вітається.
+      <strong>{ui.footer.noteLabel}</strong>
+      {ui.footer.disclaimerBody}
     </p>
     <a
       href={paypalLink}
@@ -29,10 +33,10 @@ const { paypalLink = "https://paypal.me/smurf11k" } = Astro.props;
           d="M8.32 21.97a.546.546 0 0 1-.26-.32c-.03-.15-.06-.3-.06-.45l.71-4.55c.04-.26.26-.45.52-.45h3.77c2.26 0 4.02-.46 5.25-1.37 1.23-.91 2.04-2.34 2.42-4.27.18-.88.18-1.62 0-2.21a3.28 3.28 0 0 0-1.02-1.48c-.48-.39-1.08-.66-1.8-.82A12.3 12.3 0 0 0 15.02 6H7.8c-.52 0-.96.38-1.03.89L5.09 18.42c-.04.26.02.52.18.73.16.2.4.32.66.32h2.39zm9.45-15.94c1.13.21 2.05.54 2.75 1 .71.45 1.23 1.03 1.55 1.74.33.71.44 1.57.33 2.56-.43 2.25-1.42 3.94-2.97 5.06-1.55 1.13-3.67 1.69-6.36 1.69h-3.2l-.6 3.87c-.07.45-.45.78-.91.78H5.97c-.52 0-.96-.38-1.03-.89L3.26 7.31c-.07-.45.26-.88.72-.88h8.04c1.17 0 2.17.08 3.01.24.84.16 1.53.4 2.08.72.54.33.96.75 1.25 1.26.29.51.42 1.11.41 1.78 0 .04 0 .08-.01.13a.55.55 0 0 1-.02.13c.03-.01.03-.13 0-.37z"
         ></path>
       </svg>
-      <span>Support via PayPal</span>
+      <span>{ui.footer.supportViaPayPal}</span>
     </a>
     <p class="copyright">
-      © {new Date().getFullYear()} Magyar Notes. Made with ❤️ for language learners.
+      © {new Date().getFullYear()} Magyar Notes. {ui.footer.copyrightSuffix}
     </p>
   </div>
 </footer>

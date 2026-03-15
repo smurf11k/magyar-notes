@@ -3,8 +3,21 @@ import LessonLayout from "../../layouts/LessonLayout.astro";
 import Callout from "../../components/Callout.astro";
 import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
-import { stripMd, titleFromPart, orderFromPart, getFolderLabel } from "../../lib/lesson-nav";
+import {
+  stripMd,
+  titleFromPart,
+  orderFromPart,
+  getFolderLabel,
+} from "../../lib/lesson-nav";
 import Steps from "../../components/Steps.astro";
+import {
+  belongsToLang,
+  contentFolderForLang,
+  DEFAULT_LANG,
+  makeLocalizedLessonHref,
+  stripContentLangPrefix,
+  withContentLangPrefix,
+} from "../../i18n/routing";
 
 type TreeNode = {
   name: string;
@@ -22,7 +35,20 @@ type NavItem = {
   description?: string;
 };
 
-function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
+function resolveDisplayTitle(
+  title: string | undefined,
+  fallbackPart: string,
+): string {
+  const normalized = title?.trim();
+  return normalized && normalized.length > 0
+    ? normalized
+    : titleFromPart(fallbackPart);
+}
+
+function buildTree(
+  entries: CollectionEntry<"lessons">[],
+  langContentFolder: string,
+): TreeNode[] {
   const root: TreeNode = {
     name: "",
     label: "",
@@ -34,22 +60,23 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
   // Create a map of paths to titles from frontmatter
   const pathToTitle = new Map<string, string>();
   for (const entry of entries) {
-    const clean = stripMd(entry.id);
-    if (entry.data.title) {
-      pathToTitle.set(clean, entry.data.title);
-    }
+    const clean = stripMd(stripContentLangPrefix(entry.id));
+    pathToTitle.set(
+      clean,
+      resolveDisplayTitle(entry.data.title, clean.split("/").at(-1) ?? ""),
+    );
   }
 
   const pathToEmpty = new Map<string, boolean>();
   for (const entry of entries) {
-    const clean = stripMd(entry.id);
+    const clean = stripMd(stripContentLangPrefix(entry.id));
     const isEmpty =
       (entry.body ?? "").replace(/<[^>]*>/g, "").trim().length === 0;
     pathToEmpty.set(clean, isEmpty);
   }
 
   for (const entry of entries) {
-    const clean = stripMd(entry.id);
+    const clean = stripMd(stripContentLangPrefix(entry.id));
     const parts = clean.split("/");
 
     let cur = root;
@@ -70,7 +97,10 @@ function buildTree(entries: CollectionEntry<"lessons">[]): TreeNode[] {
           label = pathToTitle.get(accum)!;
         } else if (!isLeaf) {
           // Folder node: use _meta.json label, fallback to prettified name
-          label = getFolderLabel(accum) ?? titleFromPart(part);
+          label =
+            getFolderLabel(`${langContentFolder}/${accum}`) ??
+            getFolderLabel(accum) ??
+            titleFromPart(part);
         } else {
           label = titleFromPart(part);
         }
@@ -141,10 +171,12 @@ export async function getStaticPaths() {
     return data.hidden !== true;
   });
 
-  return lessons.map((entry) => ({
-    params: { slug: stripMd(entry.id) },
-    props: { entry },
-  }));
+  return lessons
+    .filter((entry) => belongsToLang(entry.id, DEFAULT_LANG))
+    .map((entry) => ({
+      params: { slug: stripMd(stripContentLangPrefix(entry.id)) },
+      props: { entry },
+    }));
 }
 
 const slug = Astro.params.slug!;
@@ -154,6 +186,9 @@ const targetIdMdx = Array.isArray(slug)
   ? slug.join("/") + ".mdx"
   : slug + ".mdx";
 
+const prefixedTargetMd = withContentLangPrefix(targetIdMd, DEFAULT_LANG);
+const prefixedTargetMdx = withContentLangPrefix(targetIdMdx, DEFAULT_LANG);
+
 const entries: CollectionEntry<"lessons">[] = await getCollection(
   "lessons",
   ({ data }) => {
@@ -161,16 +196,25 @@ const entries: CollectionEntry<"lessons">[] = await getCollection(
   },
 );
 // Try to find either .md or .mdx file
-const entry = entries.find((e) => e.id === targetIdMd || e.id === targetIdMdx);
+const langEntries = entries.filter((e) => belongsToLang(e.id, DEFAULT_LANG));
+const entry = langEntries.find(
+  (e) =>
+    e.id === prefixedTargetMd ||
+    e.id === prefixedTargetMdx ||
+    e.id === targetIdMd ||
+    e.id === targetIdMdx,
+);
 if (!entry) return new Response("Page not found", { status: 404 });
 
 const { Content, headings } = await render(entry);
 
 // Build tree for current level
-const levelFolder = entry.id.split("/")[0];
-const levelEntries = entries.filter((e) => e.id.startsWith(levelFolder + "/"));
-const tree = buildTree(levelEntries);
-const activePath = stripMd(entry.id);
+const levelFolder = stripContentLangPrefix(entry.id).split("/")[0];
+const levelEntries = langEntries.filter((e) =>
+  stripContentLangPrefix(e.id).startsWith(levelFolder + "/"),
+);
+const tree = buildTree(levelEntries, contentFolderForLang(DEFAULT_LANG));
+const activePath = stripMd(stripContentLangPrefix(entry.id));
 
 const isEntryEmpty = (e: CollectionEntry<"lessons">) =>
   (e.body ?? "").replace(/<[^>]*>/g, "").trim().length === 0;
@@ -178,16 +222,18 @@ const isEntryEmpty = (e: CollectionEntry<"lessons">) =>
 // Build prev/next navigation
 const ordered: NavItem[] = [...levelEntries]
   .filter((e) => !isEntryEmpty(e))
-  .sort((a, b) => sortByPath(a.id, b.id))
+  .sort((a, b) =>
+    sortByPath(stripContentLangPrefix(a.id), stripContentLangPrefix(b.id)),
+  )
   .map((e) => {
-    const clean = stripMd(e.id);
+    const clean = stripMd(stripContentLangPrefix(e.id));
     const parts = clean.split("/");
     const last = parts[parts.length - 1];
 
     return {
       id: e.id,
-      href: "/lessons/" + clean,
-      title: e.data.title ?? titleFromPart(last),
+      href: makeLocalizedLessonHref(clean, DEFAULT_LANG),
+      title: resolveDisplayTitle(e.data.title, last),
       description: e.data.description ?? "",
     };
   });
@@ -208,6 +254,7 @@ const description = entry.data.description ?? titleFromPart(levelFolder);
   activePath={activePath}
   prev={prev}
   next={next}
+  lang={DEFAULT_LANG}
 >
   <Content components={{ Callout, Steps }} />
 </LessonLayout>

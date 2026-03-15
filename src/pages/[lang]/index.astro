@@ -1,17 +1,32 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
 import { getCollection } from "astro:content";
-import { levelFromFolder, stripMd, orderFromPart } from "../lib/lesson-nav";
+import { levelFromFolder, stripMd, orderFromPart } from "../../lib/lesson-nav";
 import {
   belongsToLang,
+  DEFAULT_LANG,
+  isValidNonDefaultLangRoute,
   makeLocalizedLessonHref,
-  routeLangFromPathname,
+  normalizeLang,
   stripContentLangPrefix,
-} from "../i18n/routing";
-import { getUi } from "../i18n/ui";
+  SUPPORTED_LANGS,
+} from "../../i18n/routing";
+import { getUi } from "../../i18n/ui";
 
-const lang = routeLangFromPathname(Astro.url.pathname);
+export function getStaticPaths() {
+  return SUPPORTED_LANGS.filter((lang) => lang !== DEFAULT_LANG).map(
+    (lang) => ({
+      params: { lang },
+    }),
+  );
+}
+
+if (!isValidNonDefaultLangRoute(Astro.params.lang)) {
+  return new Response("Page not found", { status: 404 });
+}
+
+const lang = normalizeLang(Astro.params.lang);
 const ui = getUi(lang);
 
 const allLessons = await getCollection("lessons", ({ data }) => {
@@ -24,15 +39,12 @@ function normalizedLessonId(id: string): string {
   return stripMd(stripContentLangPrefix(id));
 }
 
-// level folder = first path segment, e.g. "a1-lessons"
 const levelFolders = Array.from(
   new Set(lessons.map((e) => normalizedLessonId(e.id).split("/")[0])),
 );
 
-// Level descriptions
 const levelDescriptions = ui.home.levelDescriptions;
 
-// Level colors
 const levelColors: Record<
   string,
   { bg: string; border: string; text: string }
@@ -69,14 +81,13 @@ const levelColors: Record<
   },
 };
 
-// Function to get first lesson URL for a level
 function getFirstLessonUrl(levelFolder: string): string {
   const levelEntries = lessons.filter((e) =>
     normalizedLessonId(e.id).startsWith(levelFolder + "/"),
   );
 
   if (levelEntries.length === 0) {
-    return "#"; // Fallback if no lessons
+    return "#";
   }
 
   const sorted = [...levelEntries].sort((a, b) => {
@@ -98,7 +109,6 @@ function getFirstLessonUrl(levelFolder: string): string {
   return makeLocalizedLessonHref(normalizedLessonId(sorted[0].id), lang);
 }
 
-// convert to human level labels (A1/A2/B1/B2/C1/C2)
 const levels = levelFolders
   .map((folder) => ({
     folder,
@@ -115,7 +125,6 @@ const levels = levelFolders
     } => !!x.label,
   );
 
-// order A1 A2 B1 B2 C1 C2
 const order = ["A1", "A2", "B1", "B2", "C1", "C2"];
 levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
 ---
@@ -202,7 +211,7 @@ levels.sort((a, b) => order.indexOf(a.label) - order.indexOf(b.label));
     }
 
     .subtitle {
-      margin: 12px 0 18px;
+      margin: 10px 0 18px;
       opacity: 0.75;
       max-width: 52ch;
       line-height: 1.5;

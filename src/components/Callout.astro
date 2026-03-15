@@ -2,40 +2,48 @@
 export interface Props {
   type?: "warning" | "tip" | "note" | "danger" | "info";
   title?: string;
+  lang?: string;
 }
 
-const { type = "info", title } = Astro.props;
+import { getUi } from "../i18n/ui";
+import { normalizeLang, routeLangFromPathname } from "../i18n/routing";
+
+const { type = "info", title, lang } = Astro.props;
+const resolvedLang = lang
+  ? normalizeLang(lang)
+  : routeLangFromPathname(Astro.url.pathname);
+const ui = getUi(resolvedLang);
 
 const config = {
   warning: {
     color: "#f59e0b",
     bg: "rgba(245, 158, 11, 0.08)",
     icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
-    label: title || "Warning",
+    label: title || ui.callout.warning,
   },
   tip: {
     color: "#10b981",
     bg: "rgba(16, 185, 129, 0.08)",
     icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
-    label: title || "Tip",
+    label: title || ui.callout.tip,
   },
   note: {
     color: "#3b82f6",
     bg: "rgba(59, 130, 246, 0.08)",
     icon: "M14.7 4.3l5 5L8 21H3v-5L14.7 4.3z",
-    label: title || "Note",
+    label: title || ui.callout.note,
   },
   danger: {
     color: "#ef4444",
     bg: "rgba(239, 68, 68, 0.08)",
     icon: "M12 2a10 10 0 1010 10A10 10 0 0012 2zm3 13l-6-6m0 6l6-6",
-    label: title || "Danger",
+    label: title || ui.callout.danger,
   },
   info: {
     color: "#8b5cf6",
     bg: "rgba(139, 92, 246, 0.08)",
     icon: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-    label: title || "Info",
+    label: title || ui.callout.info,
   },
 };
 

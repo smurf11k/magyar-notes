@@ -1,16 +1,18 @@
 ---
 import Footer from "../components/Footer.astro";
+
+const { lang = "en", title = "Magyar Notes" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>Magyar Notes</title>
+    <title>{title}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,7 +23,7 @@ import Footer from "../components/Footer.astro";
   </head>
   <body>
     <slot />
-    <Footer />
+    <Footer lang={lang} />
   </body>
 </html>
 

@@ -4,13 +4,18 @@ import TreeNodeItem, { type TreeNode } from "./TreeNodeItem.astro";
 const { tree, activePath } = Astro.props as {
   tree: TreeNode[];
   activePath: string;
+  lang?: string;
 };
+
+const lang = Astro.props.lang;
 ---
 
 <ul class="tree">
   {
     tree
       .filter((n) => !(n.isFile && n.isEmpty))
-      .map((node) => <TreeNodeItem node={node} activePath={activePath} />)
+      .map((node) => (
+        <TreeNodeItem node={node} activePath={activePath} lang={lang} />
+      ))
   }
 </ul>

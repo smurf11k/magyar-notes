@@ -1,9 +1,11 @@
 ---
 import Self from "./TreeNodeItem.astro";
+import { makeLocalizedLessonHref, normalizeLang } from "../i18n/routing";
 
 export type TreeNode = {
   name: string;
   label: string;
+  marker?: string;
   path: string;
   isFile: boolean;
   isEmpty?: boolean;
@@ -13,7 +15,10 @@ export type TreeNode = {
 const { node, activePath } = Astro.props as {
   node: TreeNode;
   activePath: string;
+  lang?: string;
 };
+
+const lang = normalizeLang(Astro.props.lang);
 
 const isActive = node.isFile && node.path === activePath;
 ---
@@ -23,9 +28,10 @@ const isActive = node.isFile && node.path === activePath;
     node.isFile ? (
       <a
         class={"node " + (isActive ? "active" : "")}
-        href={`/lessons/${node.path}`}
+        href={makeLocalizedLessonHref(node.path, lang)}
       >
         {node.label}
+        {node.marker && <span class="nodeMarker">[{node.marker}]</span>}
       </a>
     ) : (
       <div class="node navhead">{node.label}</div>
@@ -38,7 +44,7 @@ const isActive = node.isFile && node.path === activePath;
         {node.children
           .filter((c) => !(c.isFile && c.isEmpty))
           .map((child) => (
-            <Self node={child} activePath={activePath} />
+            <Self node={child} activePath={activePath} lang={lang} />
           ))}
       </ul>
     ) : null
