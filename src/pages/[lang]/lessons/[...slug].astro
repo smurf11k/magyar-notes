@@ -323,7 +323,10 @@ const idx = ordered.findIndex((x) => x.id === activePath);
 const prev = idx > 0 ? ordered[idx - 1] : null;
 const next = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
 
-const pageTitle = entry.data.title ?? "Lesson";
+const pageTitle = resolveDisplayTitle(
+  entry.data.title,
+  activePath.split("/").at(-1) ?? "",
+);
 const description = entry.data.description ?? titleFromPart(levelFolder);
 ---
 
