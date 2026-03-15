@@ -111,8 +111,9 @@ const btnId = `tts-${Math.random().toString(36).slice(2)}`;
 
     async function exists(url) {
       try {
-        const res = await fetch(url, { method: "HEAD" });
-        return res.ok;
+        const res = await fetch(url); //(url, { method: "GET", headers: { Range: "bytes=0-1" } });
+        const type = res.headers.get("content-type") || "";
+        return res.ok && type.startsWith("audio");
       } catch {
         return false;
       }
