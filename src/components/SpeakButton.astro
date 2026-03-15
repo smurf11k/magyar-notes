@@ -109,14 +109,24 @@ const btnId = `tts-${Math.random().toString(36).slice(2)}`;
         .forEach((b) => b.classList.remove("speaking"));
     }
 
+    const audioExistsCache = new Map();
+
     async function exists(url) {
+      if (audioExistsCache.has(url)) return audioExistsCache.get(url);
+
+      let ok = false;
       try {
-        const res = await fetch(url); //(url, { method: "GET", headers: { Range: "bytes=0-1" } });
+        const res = await fetch(url, {
+          method: "GET",
+          headers: { Range: "bytes=0-1" },
+        });
+
         const type = res.headers.get("content-type") || "";
-        return res.ok && type.startsWith("audio");
-      } catch {
-        return false;
-      }
+        ok = res.ok && type.startsWith("audio");
+      } catch {}
+
+      audioExistsCache.set(url, ok);
+      return ok;
     }
 
     function splitText(text) {
