@@ -105,9 +105,9 @@ function buildTree(
         } else if (!isLeaf) {
           label =
             getFolderLabel(`${primaryLangContentFolder}/${accum}`) ??
+            titleFromPart(part) ??
             getFolderLabel(`${fallbackLangContentFolder}/${accum}`) ??
-            getFolderLabel(accum) ??
-            titleFromPart(part);
+            getFolderLabel(accum);
         } else {
           label = titleFromPart(part);
         }
