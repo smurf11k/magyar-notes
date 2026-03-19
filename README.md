@@ -34,3 +34,14 @@ The project currently contains **A1 lessons** and will be expanded gradually up 
 
 🚧 **Active development**  
 Lessons and features are added progressively as the curriculum grows.
+
+## Plans & Goals
+
+- [ ] translate to english
+- [ ] create vocabulary flashcards for each lesson
+- [ ] add audio examples for pronunciation practice
+- [ ] implement interactive quizzes for self-assessment
+- [ ] build a grammar reference section with search functionality
+- [ ] design progress tracking for learners
+- [x] add dark mode support for better reading experience
+- [ ] create printable lesson summaries for offline study
